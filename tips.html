@@ -1,0 +1,414 @@
+<!-- Thanksgiving Survival Tips Widget (trimmed copy) -->
+<div class="tnx-tips-widget"></div>
+<script>
+(function () {
+  const host = document.currentScript.previousElementSibling;
+  if (!host || !host.classList.contains('tnx-tips-widget')) return;
+
+  const shadow = host.attachShadow({ mode: 'open' });
+  const uid = 'tnx' + Math.random().toString(36).slice(2, 8);
+
+  shadow.innerHTML = `
+    <section class="tnx" aria-labelledby="tnx-title-${uid}" role="region">
+      <style>
+        :host {
+          display: block;
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: clamp(16px, 3vw, 28px);
+          box-sizing: border-box;
+        }
+        .tnx {
+          --cranberry: #B22B3B;
+          --pumpkin:   #E87524;
+          --mustard:   #F1C232;
+          --sage:      #A6B58E;
+          --sage-soft: #E4EAD5;
+          --beige:     #F9F6F1;
+          --charcoal:  #2C2C2C;
+          --border:    #E3E0D6;
+
+          --bg: #FFFFFF;
+          --ink: var(--charcoal);
+          --muted: #5F625E;
+          --card: #FFFCF6;
+          --radius: 14px;
+          --shadow: 0 10px 25px rgba(0,0,0,0.06);
+
+          color: var(--ink);
+          background: linear-gradient(180deg, var(--beige), #FFFFFF);
+          border-radius: 16px;
+          border: 1px solid rgba(0,0,0,0.04);
+          box-shadow: var(--shadow);
+          font: 15px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          position: relative;
+          overflow: hidden;
+        }
+        @media (prefers-color-scheme: dark) {
+          .tnx {
+            --bg: #121317;
+            --ink: #ECEFF3;
+            --muted: #B5BCC4;
+            --card: #181A1F;
+            background: radial-gradient(circle at top, #1E2128, #0F1115);
+            border-color: #262933;
+            --shadow: none;
+          }
+        }
+        .tnx::before {
+          content: "";
+          position: absolute;
+          inset: 0 0 auto 0;
+          height: 4px;
+          background: linear-gradient(90deg, var(--sage-soft), var(--mustard), var(--pumpkin), var(--cranberry));
+        }
+        .tnx-inner {
+          padding: 1.6rem 1.6rem 1.3rem;
+        }
+        .tnx-eyebrow {
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-size: 0.78rem;
+          color: var(--muted);
+          font-weight: 700;
+        }
+        .tnx-title {
+          margin: 0.25rem 0 0.3rem;
+          font-size: clamp(1.5rem, 2.6vw, 2rem);
+          font-weight: 800;
+          line-height: 1.15;
+        }
+        .tnx-sub {
+          margin: 0 0 1.1rem;
+          color: var(--muted);
+          font-size: 0.95rem;
+          max-width: 640px;
+        }
+
+        .tnx-grid {
+          --col-min: clamp(240px, 26vw, 320px);
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(var(--col-min), 1fr));
+          gap: clamp(12px, 1.7vw, 16px);
+        }
+
+        .tnx-card {
+          position: relative;
+          background: var(--bg);
+          border-radius: var(--radius);
+          border: 1px solid rgba(0,0,0,0.05);
+          padding: 0.9rem 0.9rem 2.1rem;
+          min-height: 135px;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+          transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+        }
+        .tnx-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+          border-color: rgba(178,43,59,0.25);
+        }
+
+        .tnx-badge {
+          position: absolute;
+          inset: auto 10px 10px auto;
+          padding: 5px 9px;
+          border-radius: 999px;
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: #4A221E;
+          background: linear-gradient(135deg, #FFE7D5, #F9D0C9);
+          border: 1px solid rgba(178,43,59,0.35);
+        }
+        @media (prefers-color-scheme: dark) {
+          .tnx-badge {
+            color: #160809;
+            background: radial-gradient(circle at top, rgba(248,202,185,0.25), rgba(178,43,59,0.3));
+          }
+        }
+
+        .tnx-rule-title {
+          display: flex;
+          align-items: flex-start;
+          gap: 8px;
+          margin: 0 0 0.25rem;
+          font-weight: 750;
+          font-size: 1rem;
+          line-height: 1.3;
+        }
+        .tnx-icon {
+          width: 24px;
+          height: 24px;
+          flex: 0 0 24px;
+          color: var(--cranberry);
+        }
+        .tnx-text {
+          margin: 0;
+          font-size: 0.94rem;
+          color: var(--muted);
+        }
+
+        .tnx-footer {
+          margin-top: 1.1rem;
+          padding-top: 0.7rem;
+          border-top: 1px dashed rgba(0,0,0,0.08);
+          font-size: 0.85rem;
+          color: var(--muted);
+        }
+        @media (prefers-color-scheme: dark) {
+          .tnx-footer {
+            border-top-color: rgba(255,255,255,0.08);
+          }
+        }
+
+        .tnx-footer strong {
+          font-weight: 700;
+        }
+
+        .tnx-share {
+          margin-top: 0.4rem;
+          text-align: right;
+          font-size: 0.8rem;
+        }
+        .tnx-share button {
+          appearance: none;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          padding: 5px 10px;
+          background: #fffdf8;
+          color: var(--ink);
+          font-size: 0.78rem;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        .tnx-share button:hover {
+          background: #FFF9EE;
+        }
+        @media (prefers-color-scheme: dark) {
+          .tnx-share button {
+            background: #191b21;
+            border-color: #2C303A;
+          }
+          .tnx-share button:hover {
+            background: #22252E;
+          }
+        }
+
+        .tnx-embed-wrap[hidden] { display: none; }
+        .tnx-embed {
+          width: 100%;
+          margin-top: 0.6rem;
+          font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+          border-radius: 8px;
+          border: 1px solid rgba(0,0,0,0.12);
+          padding: 8px;
+          resize: none;
+          min-height: 180px;
+          background: #fff;
+          color: inherit;
+        }
+        @media (prefers-color-scheme: dark) {
+          .tnx-embed {
+            background: #101117;
+            border-color: #2A2D37;
+          }
+        }
+
+        a:focus-visible, button:focus-visible {
+          outline: 3px solid var(--cranberry);
+          outline-offset: 3px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .tnx-card { transition: none; }
+        }
+
+        @media (max-width: 640px) {
+          .tnx-inner {
+            padding: 1.25rem 1.1rem 1.1rem;
+          }
+        }
+      </style>
+
+      <div class="tnx-inner">
+        <div class="tnx-eyebrow">Thanksgiving Survival Tips</div>
+        <h2 id="tnx-title-${uid}" class="tnx-title">Five Ways to Improve Your Thanksgiving Odds</h2>
+        <p class="tnx-sub">
+          The odds of a peaceful Thanksgiving aren’t fixed. These small moves make it a little more likely everyone leaves speaking.
+        </p>
+
+        <div class="tnx-grid" role="list">
+          <article class="tnx-card" role="listitem">
+            <div class="tnx-badge" aria-hidden="true">Tip 1</div>
+            <h3 class="tnx-rule-title">
+              <svg class="tnx-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h16v2H4zM6 11h12v2H6zM9 15h6v2H9z" fill="currentColor"/>
+              </svg>
+              Spread the work, not the stress.
+            </h3>
+            <p class="tnx-text">
+              Ask for help early. Shared cooking means shared blame and fewer simmering resentments.
+            </p>
+          </article>
+
+          <article class="tnx-card" role="listitem">
+            <div class="tnx-badge" aria-hidden="true">Tip 2</div>
+            <h3 class="tnx-rule-title">
+              <svg class="tnx-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <path d="M8 12h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+              Call the no-politics rule early.
+            </h3>
+            <p class="tnx-text">
+              Say it with a smile, mean it like a boundary. Everyone knows the line before the first pour.
+            </p>
+          </article>
+
+          <article class="tnx-card" role="listitem">
+            <div class="tnx-badge" aria-hidden="true">Tip 3</div>
+            <h3 class="tnx-rule-title">
+              <svg class="tnx-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 4h10v6a5 5 0 1 1-10 0V4z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <path d="M9 20h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+              Pace the pours.
+            </h3>
+            <p class="tnx-text">
+              Water between drinks is the easiest way to keep “fun” from turning into “that night.”
+            </p>
+          </article>
+
+          <article class="tnx-card" role="listitem">
+            <div class="tnx-badge" aria-hidden="true">Tip 4</div>
+            <h3 class="tnx-rule-title">
+              <svg class="tnx-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 7.5 12 4l7 3.5-7 3.5z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <path d="M5 12.5 12 9l7 3.5-7 3.5z" stroke="currentColor" stroke-width="1.6" fill="none"/>
+              </svg>
+              Pivot to pie.
+            </h3>
+            <p class="tnx-text">
+              When things tighten up, jump to dessert, pets, or plans. Almost nobody fights over pie.
+            </p>
+          </article>
+
+          <article class="tnx-card" role="listitem">
+            <div class="tnx-badge" aria-hidden="true">Tip 5</div>
+            <h3 class="tnx-rule-title">
+              <svg class="tnx-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.6" fill="none"/>
+                <path d="M5.5 19a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="1.6" fill="none"/>
+              </svg>
+              Step away before you snap.
+            </h3>
+            <p class="tnx-text">
+              Take a lap, check the score, or hide with the dishes. Space beats the perfect comeback every time.
+            </p>
+          </article>
+        </div>
+
+        <div class="tnx-footer">
+          <strong>Bottom line:</strong> Thanksgiving is a long game. Protect the relationships — the rest is leftovers.
+          <div class="tnx-share">
+            <button type="button" class="tnx-embed-toggle" aria-controls="tnx-embed-${uid}" aria-expanded="false">
+              Get Embed Code
+            </button>
+          </div>
+          <div id="tnx-embed-${uid}" class="tnx-embed-wrap" hidden>
+            <textarea class="tnx-embed" readonly></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+
+  const embedWrap = shadow.getElementById(`tnx-embed-${uid}`);
+  const embedBtn = shadow.querySelector('.tnx-embed-toggle');
+  const embedBox = embedWrap.querySelector('.tnx-embed');
+
+  if (embedBtn && embedBox) {
+    embedBtn.addEventListener('click', () => {
+      const hidden = embedWrap.hasAttribute('hidden');
+      if (hidden) {
+        embedWrap.removeAttribute('hidden');
+      } else {
+        embedWrap.setAttribute('hidden', '');
+      }
+      embedBtn.setAttribute('aria-expanded', String(hidden));
+    });
+
+    embedBox.value =
+`<!-- BEGIN: Action Network — Thanksgiving Survival Tips (Scriptless Embed) -->
+<section class="tnx-survival-tips-embed" role="region" aria-labelledby="tnx-survival-title" style="max-width:1100px;margin:16px auto;padding:16px;border-radius:16px;border:1px solid #E3E0D6;background:linear-gradient(180deg,#F9F6F1,#FFFFFF);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#2C2C2C;box-sizing:border-box;">
+  <style>
+    .tnx-survival-tips-embed *{box-sizing:border-box}
+    .tnx-survival-tips-embed .eyebrow{letter-spacing:.08em;text-transform:uppercase;font-size:.78rem;color:#5F625E;font-weight:700}
+    .tnx-survival-tips-embed h2{margin:.3rem 0 .4rem;font-size:clamp(1.5rem,2.4vw,2rem);font-weight:800;line-height:1.15}
+    .tnx-survival-tips-embed .sub{margin:0 0 1rem;color:#5F625E;font-size:.95rem;max-width:640px}
+    .tnx-survival-tips-embed .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:.3rem}
+    .tnx-survival-tips-embed .card{position:relative;background:#FFFFFF;border-radius:14px;border:1px solid rgba(0,0,0,0.06);padding:10px 10px 32px;min-height:130px;box-shadow:0 1px 2px rgba(0,0,0,0.03)}
+    .tnx-survival-tips-embed .badge{position:absolute;right:10px;bottom:10px;font-size:.7rem;font-weight:700;padding:4px 8px;border-radius:999px;background:linear-gradient(135deg,#FFE7D5,#F9D0C9);border:1px solid rgba(178,43,59,0.35);color:#4A221E}
+    .tnx-survival-tips-embed .rule-title{display:flex;align-items:flex-start;gap:8px;margin:0 0 .25rem;font-weight:750;font-size:1rem;line-height:1.3}
+    .tnx-survival-tips-embed .icon{width:22px;height:22px;flex:0 0 22px;color:#B22B3B}
+    .tnx-survival-tips-embed .text{margin:0;font-size:.94rem;color:#5F625E}
+    .tnx-survival-tips-embed .footer{margin-top:1rem;padding-top:.6rem;border-top:1px dashed rgba(0,0,0,0.1);font-size:.85rem;color:#5F625E}
+  </style>
+
+  <div class="eyebrow">Thanksgiving Survival Tips</div>
+  <h2 id="tnx-survival-title">Five Ways to Improve Your Thanksgiving Odds</h2>
+  <p class="sub">The odds of a peaceful Thanksgiving aren’t fixed. These small moves make it a little more likely everyone leaves speaking.</p>
+
+  <div class="grid" role="list">
+    <article class="card" role="listitem">
+      <div class="badge" aria-hidden="true">Tip 1</div>
+      <h3 class="rule-title">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v2H4zM6 11h12v2H6zM9 15h6v2H9z" fill="currentColor"/></svg>
+        Spread the work, not the stress.
+      </h3>
+      <p class="text">Ask for help early. Shared cooking means shared blame and fewer simmering resentments.</p>
+    </article>
+
+    <article class="card" role="listitem">
+      <div class="badge" aria-hidden="true">Tip 2</div>
+      <h3 class="rule-title">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M8 12h8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Call the no-politics rule early.
+      </h3>
+      <p class="text">Say it with a smile, mean it like a boundary. Everyone knows the line before the first pour.</p>
+    </article>
+
+    <article class="card" role="listitem">
+      <div class="badge" aria-hidden="true">Tip 3</div>
+      <h3 class="rule-title">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v6a5 5 0 1 1-10 0V4z" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M9 20h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Pace the pours.
+      </h3>
+      <p class="text">Water between drinks is the easiest way to keep “fun” from turning into “that night.”</p>
+    </article>
+
+    <article class="card" role="listitem">
+      <div class="badge" aria-hidden="true">Tip 4</div>
+      <h3 class="rule-title">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7.5 12 4l7 3.5-7 3.5z" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M5 12.5 12 9l7 3.5-7 3.5z" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>
+        Pivot to pie.
+      </h3>
+      <p class="text">When things tighten up, jump to dessert, pets, or plans. Almost nobody fights over pie.</p>
+    </article>
+
+    <article class="card" role="listitem">
+      <div class="badge" aria-hidden="true">Tip 5</div>
+      <h3 class="rule-title">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M5.5 19a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>
+        Step away before you snap.
+      </h3>
+      <p class="text">Take a lap, check the score, or hide with the dishes. Space beats the perfect comeback every time.</p>
+    </article>
+  </div>
+
+  <p class="footer"><strong>Bottom line:</strong> Thanksgiving is a long game. Protect the relationships — the rest is leftovers.</p>
+</section>
+<!-- END: Action Network — Thanksgiving Survival Tips -->`;
+  }
+})();
+</script>
+
+
