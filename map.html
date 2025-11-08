@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thanksgiving Survival Odds 2025 — Estimated Chances by State</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Action Network’s Thanksgiving Survival Odds 2025 estimates each state’s chances of surviving Thanksgiving dinner without a major family blow-up, based on politics, alcohol, stress, family tension, and NFL rivalries." />
+
+  <!-- D3 + TopoJSON -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+
+  <style>
+    :root {
+      --cranberry:   #B22B3B;
+      --pumpkin:     #E87524;
+      --mustard:     #F1C232;
+      --sage:        #A6B58E;
+      --sage-light:  #E4EAD5;
+      --beige:       #F9F6F1;
+      --charcoal:    #2C2C2C;
+      --white:       #FFFFFF;
+      --border:      #E3E0D6;
+      --border-soft: rgba(0,0,0,0.06);
+      --border-radius: 12px;
+      --shadow-soft: 0 10px 25px rgba(0,0,0,0.06);
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 2.5rem 1.5rem 3.5rem;
+      background: var(--beige);
+      font-family: var(--font-main);
+      color: var(--charcoal);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      margin: 0 0 0.4rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      margin: 0 0 1rem;
+    }
+
+    .lede {
+      max-width: 640px;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      margin-bottom: 1.8rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-soft);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+      border: 1px solid var(--border-soft);
+    }
+
+    /* Legend: horizontal gradient bar */
+    .legend {
+      margin-bottom: 1.5rem;
+    }
+
+    .legend-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    .legend-gradient {
+      height: 16px;
+      width: 100%;
+      border-radius: 6px;
+      background: linear-gradient(to right,
+        #E4EAD5 0%,
+        #A6B58E 25%,
+        #F1C232 50%,
+        #E87524 75%,
+        #B22B3B 100%);
+      border: 1px solid rgba(0,0,0,0.1);
+      margin-bottom: 0.35rem;
+    }
+
+    .legend-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    .map-wrapper {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    svg#feud-map {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .state {
+      stroke: #ffffff;
+      stroke-width: 0.5;
+      cursor: default;
+    }
+
+    .state:hover {
+      stroke: #000;
+      stroke-width: 0.8;
+    }
+
+    .map-caption {
+      font-size: 0.85rem;
+      margin-top: 0.75rem;
+      color: #555;
+    }
+
+    .tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: #fffdfa; /* off-white, warmer than pure white */
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 0.65rem 0.85rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: #2c2c2c;
+  display: none;
+  z-index: 10;
+  max-width: 240px;
+  transition: opacity 0.1s ease, transform 0.1s ease;
+  transform: translateY(0);
+}
+
+.tooltip strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: #111;
+}
+
+.tooltip em {
+  font-style: normal;
+  color: #B22B3B; /* subtle cranberry accent for odds */
+  font-weight: 600;
+}
+
+
+
+
+
+    /* Tables */
+    .tables-wrapper {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 0.5rem 0.4rem;
+      text-align: left;
+    }
+
+    th {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid rgba(0,0,0,0.08);
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(0,0,0,0.02);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.6rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .pill--safe {
+      background: rgba(166,181,142,0.2);
+      color: #3d4a2c;
+    }
+
+    .pill--risky {
+      background: rgba(178,43,59,0.18);
+      color: #7c1120;
+    }
+
+    /* Share / embed */
+    .share {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      background: #faf8f3;
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+      margin-left: -1.75rem;
+      margin-right: -1.75rem;
+      padding-left: 1.75rem;
+      padding-right: 1.75rem;
+      padding-bottom: 1.25rem;
+    }
+
+    .share h3 {
+      margin: 0 0 6px;
+      font-size: 0.95rem;
+    }
+
+    .embed-toggle {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .embed-toggle:hover {
+      background: #fffdfa;
+    }
+
+    .embed-panel[hidden] {
+      display: none;
+    }
+
+    .embed-panel {
+      margin-top: 8px;
+    }
+
+    .embed-block {
+      margin-top: 10px;
+    }
+
+    .embed-block label {
+      display: block;
+      font-weight: 700;
+      margin: 6px 0 4px;
+      font-size: 0.85rem;
+    }
+
+    .embed-block textarea {
+      width: 100%;
+      height: 120px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      background: #fff;
+      color: inherit;
+      font: 12px/1.4 ui-monospace,Consolas,Monaco,monospace;
+      resize: none;
+    }
+
+    .footnote {
+      font-size: 0.8rem;
+      color: #777;
+      text-align: center;
+      max-width: 800px;
+      margin: 0.75rem auto 0;
+    }
+
+    .footnote a {
+      color: var(--pumpkin);
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px dotted currentColor;
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding: 1.25rem 0.75rem 2.25rem;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+
+      h2 {
+        font-size: 1.15rem;
+      }
+
+      .card {
+        padding: 1.25rem;
+      }
+
+      .share {
+        margin-left: -1.25rem;
+        margin-right: -1.25rem;
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+      }
+
+      .tables-wrapper {
+        grid-template-columns: 1fr;
+        gap: 1.1rem;
+      }
+
+      table {
+        font-size: 0.85rem;
+      }
+
+      th, td {
+        padding: 0.4rem 0.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <section class="card">
+<h1>Thanksgiving Survival Odds 2025</h1>
+<h2>Which states are most likely to survive Thanksgiving dinner?</h2>
+
+    <!-- Legend -->
+
+  <div class="legend">
+  <div class="legend-title">Thanksgiving dinner survival odds</div>
+  <div class="legend-gradient"></div>
+  <div class="legend-labels">
+    <span>Best odds<br><small>≈80%+ — “we’re fine”</small></span>
+    <span>Worst odds<br><small>&lt;50% — “pass the wine”</small></span>
+  </div>
+</div>
+
+
+
+    <!-- Map -->
+    <div class="map-wrapper">
+      <svg
+        id="feud-map"
+        viewBox="0 0 975 610"
+        role="img"
+        aria-labelledby="map-title map-desc">
+        <title id="map-title"></title>
+<desc id="map-desc"></desc>
+
+      </svg>
+    </div>
+
+ <p class="map-caption">
+  States are shaded by their estimated odds of surviving Thanksgiving without a major family feud — from pale sage (≈80%+ implied chance of a peaceful dinner) to deep cranberry (under 50%). 
+  Based on data around stress, politics, alcohol, and family tension, it’s part math, part mayhem — and should probably come with a side of pie.
+</p>
+
+
+
+    <!-- Tables -->
+    <div class="tables-wrapper">
+      <!-- Worst odds first -->
+      <div>
+        <h3>States Least Likely to Survive Thanksgiving</h3>
+        <p class="map-caption" style="margin-top:0.25rem;font-size:0.8rem;color:#777;">
+ Based on modeled, implied odds of surviving Thanksgiving dinner without a family blow-up.
+</p>
+        <table>
+          <thead>
+          <tr>
+            <th>Rank<br>(1 = worst)</th>
+            <th>State</th>
+            <th>Est. Survival&nbsp;Prob. (%)</th>
+            <th>Implied Odds</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr><td><span class="pill pill--risky">1</span></td><td>California</td><td>47.6</td><td>1 in 2.10</td></tr>
+          <tr><td><span class="pill pill--risky">2</span></td><td>New Mexico</td><td>47.9</td><td>1 in 2.09</td></tr>
+          <tr><td><span class="pill pill--risky">3</span></td><td>Nevada</td><td>48.3</td><td>1 in 2.07</td></tr>
+          <tr><td><span class="pill pill--risky">4</span></td><td>Pennsylvania</td><td>48.8</td><td>1 in 2.05</td></tr>
+          <tr><td><span class="pill pill--risky">5</span></td><td>Florida</td><td>49.1</td><td>1 in 2.04</td></tr>
+          <tr><td><span class="pill pill--risky">6</span></td><td>Texas</td><td>49.3</td><td>1 in 2.03</td></tr>
+          <tr><td><span class="pill pill--risky">7</span></td><td>New Jersey</td><td>51.5</td><td>1 in 1.94</td></tr>
+          <tr><td><span class="pill pill--risky">8</span></td><td>North Carolina</td><td>52.5</td><td>1 in 1.90</td></tr>
+          <tr><td><span class="pill pill--risky">9</span></td><td>Arizona</td><td>53.0</td><td>1 in 1.89</td></tr>
+          <tr><td><span class="pill pill--risky">10</span></td><td>Wisconsin</td><td>53.1</td><td>1 in 1.88</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Best odds -->
+      <div>
+        <h3>States Most Likely to Survive Thanksgiving</h3>
+<p class="map-caption" style="margin-top:0.25rem;font-size:0.8rem;color:#777;">
+  Based on modeled, implied odds of surviving Thanksgiving dinner without a family blow-up.
+</p>
+
+        <table>
+          <thead>
+          <tr>
+            <th>Rank<br>(1 = best)</th>
+            <th>State</th>
+            <th>Est. Survival&nbsp;Prob. (%)</th>
+            <th>Implied Odds</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr><td><span class="pill pill--safe">1</span></td><td>West Virginia</td><td>88.6</td><td>1 in 1.13</td></tr>
+          <tr><td><span class="pill pill--safe">2</span></td><td>Wyoming</td><td>87.2</td><td>1 in 1.15</td></tr>
+          <tr><td><span class="pill pill--safe">3</span></td><td>Idaho</td><td>85.2</td><td>1 in 1.17</td></tr>
+          <tr><td><span class="pill pill--safe">4</span></td><td>Vermont</td><td>84.0</td><td>1 in 1.19</td></tr>
+          <tr><td><span class="pill pill--safe">5</span></td><td>North Dakota</td><td>83.9</td><td>1 in 1.19</td></tr>
+          <tr><td><span class="pill pill--safe">6</span></td><td>South Dakota</td><td>81.8</td><td>1 in 1.22</td></tr>
+          <tr><td><span class="pill pill--safe">7</span></td><td>Hawaii</td><td>81.0</td><td>1 in 1.24</td></tr>
+          <tr><td><span class="pill pill--safe">8</span></td><td>Nebraska</td><td>77.5</td><td>1 in 1.29</td></tr>
+          <tr><td><span class="pill pill--safe">9</span></td><td>Mississippi</td><td>76.9</td><td>1 in 1.30</td></tr>
+          <tr><td><span class="pill pill--safe">10</span></td><td>Alaska</td><td>75.9</td><td>1 in 1.32</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Share / embed -->
+    <div class="share">
+      <h3>Share / Embed</h3>
+      <button type="button" id="embedToggle" class="embed-toggle"
+              aria-controls="embedPanel" aria-expanded="false">
+        Get Embed Code
+      </button>
+
+      <div id="embedPanel" class="embed-panel" hidden>
+        <small style="color:#7a7467;font-size:0.8rem;">
+          Copy and paste the embed you need below. All values are model-based estimates.
+        </small>
+
+        <div class="embed-block">
+          <label for="embed-iframe">Interactive (iframe)</label>
+          <textarea id="embed-iframe" readonly onclick="this.select()"></textarea>
+        </div>
+
+        <div class="embed-block">
+          <label for="embed-static">Static (no JS)</label>
+          <textarea id="embed-static" readonly onclick="this.select()"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footnote">
+    All figures represent model-based, implied probabilities and are not predictions
+    for any specific household.
+    Source:
+    <a href="https://www.actionnetwork.com/general/thanksgiving-survival-odds-2025/"
+       target="_blank" rel="noopener">
+      Action Network — Thanksgiving Survival Odds 2025
+    </a>
+  </p>
+</main>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+  /* Canonical published URL for this graphic */
+  const CANONICAL_URL = "https://www.actionnetwork.com/general/thanksgiving-survival-odds-2025/";
+
+  // Data keyed by full state name
+  const feudData = {
+    "West Virginia":  { abbr:"WV", rank: 1,  survival: 88.59 },
+    "Wyoming":        { abbr:"WY", rank: 2,  survival: 87.18 },
+    "Idaho":          { abbr:"ID", rank: 3,  survival: 85.15 },
+    "Vermont":        { abbr:"VT", rank: 4,  survival: 83.97 },
+    "North Dakota":   { abbr:"ND", rank: 5,  survival: 83.93 },
+    "South Dakota":   { abbr:"SD", rank: 6,  survival: 81.80 },
+    "Hawaii":         { abbr:"HI", rank: 7,  survival: 80.97 },
+    "Nebraska":       { abbr:"NE", rank: 8,  survival: 77.48 },
+    "Mississippi":    { abbr:"MS", rank: 9,  survival: 76.93 },
+    "Alaska":         { abbr:"AK", rank:10,  survival: 75.91 },
+    "Rhode Island":   { abbr:"RI", rank:11,  survival: 74.77 },
+    "Connecticut":    { abbr:"CT", rank:12,  survival: 74.59 },
+    "Maine":          { abbr:"ME", rank:13,  survival: 73.59 },
+    "Arkansas":       { abbr:"AR", rank:14,  survival: 73.18 },
+    "Iowa":           { abbr:"IA", rank:15,  survival: 72.70 },
+    "Kentucky":       { abbr:"KY", rank:16,  survival: 69.18 },
+    "Alabama":        { abbr:"AL", rank:17,  survival: 68.78 },
+    "Delaware":       { abbr:"DE", rank:18,  survival: 68.21 },
+    "Louisiana":      { abbr:"LA", rank:19,  survival: 66.49 },
+    "Oklahoma":       { abbr:"OK", rank:20,  survival: 65.78 },
+    "South Carolina": { abbr:"SC", rank:21,  survival: 65.78 },
+    "Utah":           { abbr:"UT", rank:22,  survival: 65.39 },
+    "Montana":        { abbr:"MT", rank:23,  survival: 65.38 },
+    "Massachusetts":  { abbr:"MA", rank:24,  survival: 65.23 },
+    "New Hampshire":  { abbr:"NH", rank:25,  survival: 64.98 },
+    "Oregon":         { abbr:"OR", rank:26,  survival: 64.80 },
+    "New York":       { abbr:"NY", rank:27,  survival: 63.14 },
+    "Tennessee":      { abbr:"TN", rank:28,  survival: 61.99 },
+    "Indiana":        { abbr:"IN", rank:29,  survival: 61.76 },
+    "Virginia":       { abbr:"VA", rank:30,  survival: 61.37 },
+    "Washington":     { abbr:"WA", rank:31,  survival: 61.21 },
+    "Illinois":       { abbr:"IL", rank:32,  survival: 59.68 },
+    "Maryland":       { abbr:"MD", rank:33,  survival: 59.17 },
+    "Missouri":       { abbr:"MO", rank:34,  survival: 57.91 },
+    "Kansas":         { abbr:"KS", rank:35,  survival: 56.28 },
+    "Minnesota":      { abbr:"MN", rank:36,  survival: 56.07 },
+    "Michigan":       { abbr:"MI", rank:37,  survival: 55.46 },
+    "Colorado":       { abbr:"CO", rank:38,  survival: 55.20 },
+    "Georgia":        { abbr:"GA", rank:39,  survival: 54.44 },
+    "Ohio":           { abbr:"OH", rank:40,  survival: 54.20 },
+    "Wisconsin":      { abbr:"WI", rank:41,  survival: 53.06 },
+    "Arizona":        { abbr:"AZ", rank:42,  survival: 53.02 },
+    "North Carolina": { abbr:"NC", rank:43,  survival: 52.50 },
+    "New Jersey":     { abbr:"NJ", rank:44,  survival: 51.45 },
+    "Texas":          { abbr:"TX", rank:45,  survival: 49.27 },
+    "Florida":        { abbr:"FL", rank:46,  survival: 49.09 },
+    "Pennsylvania":   { abbr:"PA", rank:47,  survival: 48.82 },
+    "Nevada":         { abbr:"NV", rank:48,  survival: 48.33 },
+    "New Mexico":     { abbr:"NM", rank:49,  survival: 47.92 },
+    "California":     { abbr:"CA", rank:50,  survival: 47.58 }
+  };
+
+  function colorForSurvival(prob) {
+    if (prob >= 80) return "#E4EAD5";  // band-1
+    if (prob >= 70) return "#A6B58E";  // band-2
+    if (prob >= 60) return "#F1C232";  // band-3
+    if (prob >= 50) return "#E87524";  // band-4
+    return "#B22B3B";                  // band-5
+  }
+
+  const svg = d3.select("#feud-map");
+  const tooltip = d3.select("#tooltip");
+
+  const width = 975;
+  const height = 610;
+  const projection = d3.geoAlbersUsa()
+    .scale(1300)
+    .translate([width / 2, height / 2]);
+  const path = d3.geoPath(projection);
+
+  // Load US states TopoJSON
+  d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(us => {
+    const states = topojson.feature(us, us.objects.states).features;
+
+    svg
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .selectAll("path")
+      .data(states)
+      .join("path")
+      .attr("class", "state")
+      .attr("d", path)
+      .attr("fill", d => {
+        const name = d.properties && d.properties.name;
+        const data = feudData[name];
+        return data ? colorForSurvival(data.survival) : "#cccccc"; // DC/territories
+      })
+      .on("mousemove", (event, d) => {
+        const name = d.properties && d.properties.name;
+        const data = feudData[name];
+        if (!data) {
+          tooltip.style("display", "none");
+          return;
+        }
+
+        const surv = data.survival.toFixed(1);
+        const odds = (100 / data.survival).toFixed(2);
+
+       tooltip
+  .style("display", "block")
+  .html(
+    `<strong>${name} (${data.abbr})</strong>
+     ${surv}% chance of surviving (≈ 1 in ${odds})<br>
+     Rank: ${data.rank} of 50 (1 = best odds)`
+  );
+
+        const ttNode = tooltip.node();
+        const rect = ttNode.getBoundingClientRect();
+        const margin = 8;
+        let x = event.pageX + 12;
+        let y = event.pageY + 12;
+
+        if (x + rect.width > window.innerWidth - margin) {
+          x = window.innerWidth - rect.width - margin;
+        }
+        if (y + rect.height > window.innerHeight - margin) {
+          y = window.innerHeight - rect.height - margin;
+        }
+
+        tooltip
+          .style("left", x + "px")
+          .style("top", y + "px");
+      })
+      .on("mouseout", () => {
+        tooltip.style("display", "none");
+      });
+  });
+
+  /* -------- EMBED LOGIC -------- */
+
+  const embedToggle = document.getElementById("embedToggle");
+  const embedPanel  = document.getElementById("embedPanel");
+  const taIframe    = document.getElementById("embed-iframe");
+  const taStatic    = document.getElementById("embed-static");
+
+  if (taIframe) {
+    taIframe.value =
+`<!-- BEGIN: Action Network — Thanksgiving Survival Odds (Interactive Map) -->
+<div style="max-width:960px;margin:16px auto;">
+  <iframe src="${CANONICAL_URL}" width="100%" height="600" loading="lazy"
+          style="border:1px solid #E3E0D6;border-radius:12px;background:#fff"
+          title="Thanksgiving Survival Odds 2025 — Estimated survival by state"></iframe>
+  <p style="text-align:right;font-size:12px;color:#7a7467;margin-top:6px">
+    Source: <a href="${CANONICAL_URL}" target="_blank" rel="noopener">Action Network — Thanksgiving Survival Odds 2025</a>
+    (model-based, implied probabilities).
+  </p>
+</div>
+<!-- END: Interactive Map -->`;
+  }
+
+  if (taStatic) {
+    taStatic.value =
+`<!-- BEGIN: Thanksgiving Survival Odds Map (Static, No JS) -->
+<figure style="max-width:960px;margin:16px auto;background:#fff;border:1px solid #E3E0D6;border-radius:12px;overflow:hidden;padding:12px;">
+  <img src="YOUR-MAP-IMAGE-URL.png"
+       alt="Map of U.S. states shaded by estimated odds of surviving Thanksgiving without a major family feud."
+       style="width:100%;display:block;border-radius:8px;">
+  <figcaption style="margin-top:6px;font:12px/1.4 system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;color:#555;">
+    Thanksgiving Survival Odds 2025 — estimated odds of surviving Thanksgiving
+    without a major family feud in all 50 states (model-based, implied probabilities).
+    Source: <a href="${CANONICAL_URL}" target="_blank" rel="noopener" style="color:#E87524;text-decoration:none;border-bottom:1px dotted currentColor;">Action Network</a>.
+  </figcaption>
+</figure>
+<!-- END: Static Embed -->`;
+  }
+
+  embedToggle.addEventListener("click", () => {
+    const hidden = embedPanel.hasAttribute("hidden");
+    if (hidden) {
+      embedPanel.removeAttribute("hidden");
+      embedToggle.setAttribute("aria-expanded", "true");
+      embedToggle.textContent = "Hide Embed Code";
+    } else {
+      embedPanel.setAttribute("hidden", "");
+      embedToggle.setAttribute("aria-expanded", "false");
+      embedToggle.textContent = "Get Embed Code";
+    }
+  });
+</script>
+</body>
+</html>
+
+
+
