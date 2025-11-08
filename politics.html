@@ -1,0 +1,484 @@
+<!-- AN “Politics at the Table” (Drop-in, fully isolated) -->
+<div class="an-politics-widget"></div>
+<script>
+(function(){
+  const host = document.currentScript.previousElementSibling;
+  if (!host || !host.classList.contains('an-politics-widget')) return;
+
+  // Shadow DOM sandbox (prevents style/JS bleed)
+  const shadow = host.attachShadow({ mode: 'open' });
+  const uid = 'an' + Math.random().toString(36).slice(2,8);
+
+  shadow.innerHTML = `
+    <section class="tgk-politics-mini" aria-labelledby="title-\${uid}" role="region">
+      <style>
+        :host {
+          display:block;
+          max-width: 900px;
+          margin: 0 auto;
+          padding: clamp(10px, 2vw, 16px);
+          box-sizing: border-box;
+        }
+
+        .tgk-politics-mini {
+          --cranberry:#B22B3B;
+          --pumpkin:#E87524;
+          --mustard:#F1C232;
+          --sage:#A6B58E;
+          --sage-light:#E4EAD5;
+          --beige:#F9F6F1;
+          --charcoal:#2C2C2C;
+          --border:#E3E0D6;
+
+          margin: 0;
+          padding: 1.1rem 1.2rem 1.2rem;
+          border-radius: 14px;
+          border: 1px solid rgba(0,0,0,0.05);
+          background: linear-gradient(135deg,#FFFFFF,var(--beige));
+          box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+          font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+          color: var(--charcoal);
+          box-sizing: border-box;
+        }
+
+        .tgk-politics-mini__eyebrow {
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          font-size: 0.75rem;
+          font-weight: 700;
+          color: #7a7467;
+          margin-bottom: 0.2rem;
+        }
+
+        .tgk-politics-mini__title {
+          margin: 0 0 0.35rem;
+          font-size: 1.25rem;
+          font-weight: 800;
+        }
+
+        .tgk-politics-mini__sub {
+          margin: 0;
+          font-size: 0.85rem;
+          color: #5f625e;
+          max-width: 650px;
+        }
+
+        .tgk-politics-mini__grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+          gap: 0.9rem;
+          margin-top: 1rem;
+        }
+
+        .tgk-politics-mini__card {
+          background:#FFFFFF;
+          border-radius: 12px;
+          border:1px solid rgba(0,0,0,0.04);
+          padding:0.8rem 0.9rem 0.9rem;
+          font-size:0.8rem;
+          transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+
+        .tgk-politics-mini__card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+        }
+
+        .tgk-politics-mini__card:nth-child(1){
+          background: radial-gradient(circle at top left,rgba(178,43,59,0.08),#FFFFFF);
+          border-color:rgba(178,43,59,0.25);
+        }
+        .tgk-politics-mini__card:nth-child(3){
+          background: radial-gradient(circle at top right,rgba(232,117,36,0.08),#FFFFFF);
+          border-color:rgba(232,117,36,0.22);
+        }
+
+        .tgk-politics-mini__state {
+          display:flex;
+          justify-content:space-between;
+          align-items:baseline;
+          margin-bottom:0.25rem;
+        }
+
+        .tgk-politics-mini__state-name {
+          font-weight:800;
+          font-size:0.92rem;
+        }
+
+        .tgk-politics-mini__state-rank {
+          text-transform:uppercase;
+          letter-spacing:0.08em;
+          font-size:0.62rem;
+          color:#8a8376;
+          font-weight:700;
+        }
+
+        .tgk-politics-mini__split {
+          margin-bottom:0.25rem;
+        }
+
+        .tgk-politics-mini__split-bar {
+          position:relative;
+          height:8px;
+          border-radius:999px;
+          background:#F1EBDF;
+          overflow:hidden;
+          margin-bottom:0.25rem;
+        }
+
+        .tgk-politics-mini__split-dem,
+        .tgk-politics-mini__split-gop {
+          position:absolute;
+          top:0;
+          bottom:0;
+        }
+
+        .tgk-politics-mini__split-dem {
+          left:0;
+          background: var(--sage-light);
+        }
+
+        .tgk-politics-mini__split-gop {
+          right:0;
+          background: var(--cranberry);
+          opacity:0.85;
+        }
+
+        .tgk-politics-mini__split-labels {
+          display:flex;
+          justify-content:space-between;
+          font-size:0.7rem;
+          color:#555;
+        }
+
+        .tgk-politics-mini__survival {
+          display:flex;
+          justify-content:space-between;
+          align-items:baseline;
+          margin-top:0.25rem;
+        }
+
+        .tgk-politics-mini__survival-main {
+          font-weight:700;
+          font-size:0.82rem;
+        }
+
+        .tgk-politics-mini__survival-odds {
+          font-size:0.72rem;
+          color:#666;
+        }
+
+        .tgk-politics-mini__footnote {
+          margin-top:0.8rem;
+          font-size:0.74rem;
+          color:#777;
+        }
+
+        .tgk-politics-mini__footnote strong {
+          font-weight:700;
+        }
+
+        .tgk-politics-mini__share {
+          margin-top:0.8rem;
+          padding-top:0.6rem;
+          border-top:1px solid rgba(0,0,0,0.06);
+          font-size:0.74rem;
+          color:#777;
+        }
+
+        .tgk-politics-mini__share button {
+          margin-top:0.4rem;
+          appearance:none;
+          border:1px solid var(--border);
+          background:#fff;
+          border-radius:8px;
+          padding:6px 10px;
+          cursor:pointer;
+          font-weight:600;
+          font-size:0.78rem;
+        }
+
+        .tgk-politics-mini__share button:hover {
+          background:#fffdfa;
+        }
+
+        .tgk-politics-mini__embed[hidden] {
+          display:none;
+        }
+
+        .tgk-politics-mini__embed {
+          margin-top:0.5rem;
+        }
+
+        .tgk-politics-mini__embed textarea {
+          width:100%;
+          height:190px;
+          border-radius:8px;
+          border:1px solid var(--border);
+          padding:8px;
+          font:12px/1.4 ui-monospace,Consolas,Monaco,monospace;
+          resize:none;
+          background:#fff;
+          color:inherit;
+        }
+
+        @media (max-width:640px){
+          .tgk-politics-mini{
+            padding:0.9rem 0.85rem 1rem;
+          }
+        }
+      </style>
+
+      <div class="tgk-politics-mini__eyebrow">Politics at the Table</div>
+      <h2 id="title-\${uid}" class="tgk-politics-mini__title">Swing States, Spicier Dinners</h2>
+      <p class="tgk-politics-mini__sub">
+        In the most evenly split states, Thanksgiving conversations are statistically more likely to turn political — and tense.
+      </p>
+
+      <div class="tgk-politics-mini__grid">
+        <!-- Wisconsin -->
+        <article class="tgk-politics-mini__card" aria-label="Wisconsin Thanksgiving politics risk">
+          <div class="tgk-politics-mini__state">
+            <span class="tgk-politics-mini__state-name">Wisconsin</span>
+            <span class="tgk-politics-mini__state-rank">Most divided</span>
+          </div>
+
+          <div class="tgk-politics-mini__split">
+            <div class="tgk-politics-mini__split-bar" aria-hidden="true">
+              <div class="tgk-politics-mini__split-dem" style="width:48.7%;"></div>
+              <div class="tgk-politics-mini__split-gop" style="width:49.6%;"></div>
+            </div>
+            <div class="tgk-politics-mini__split-labels">
+              <span>Dem 48.7%</span>
+              <span>Rep 49.6%</span>
+            </div>
+          </div>
+
+          <div class="tgk-politics-mini__survival">
+            <span class="tgk-politics-mini__survival-main">53% survival chance</span>
+            <span class="tgk-politics-mini__survival-odds">≈ 1 in 1.9</span>
+          </div>
+        </article>
+
+        <!-- Michigan -->
+        <article class="tgk-politics-mini__card" aria-label="Michigan Thanksgiving politics risk">
+          <div class="tgk-politics-mini__state">
+            <span class="tgk-politics-mini__state-name">Michigan</span>
+            <span class="tgk-politics-mini__state-rank">Battleground</span>
+          </div>
+
+          <div class="tgk-politics-mini__split">
+            <div class="tgk-politics-mini__split-bar" aria-hidden="true">
+              <div class="tgk-politics-mini__split-dem" style="width:48.3%;"></div>
+              <div class="tgk-politics-mini__split-gop" style="width:49.7%;"></div>
+            </div>
+            <div class="tgk-politics-mini__split-labels">
+              <span>Dem 48.3%</span>
+              <span>Rep 49.7%</span>
+            </div>
+          </div>
+
+          <div class="tgk-politics-mini__survival">
+            <span class="tgk-politics-mini__survival-main">55% survival chance</span>
+            <span class="tgk-politics-mini__survival-odds">≈ 1 in 1.8</span>
+          </div>
+        </article>
+
+        <!-- Pennsylvania -->
+        <article class="tgk-politics-mini__card" aria-label="Pennsylvania Thanksgiving politics risk">
+          <div class="tgk-politics-mini__state">
+            <span class="tgk-politics-mini__state-name">Pennsylvania</span>
+            <span class="tgk-politics-mini__state-rank">High risk</span>
+          </div>
+
+          <div class="tgk-politics-mini__split">
+            <div class="tgk-politics-mini__split-bar" aria-hidden="true">
+              <div class="tgk-politics-mini__split-dem" style="width:48.6%;"></div>
+              <div class="tgk-politics-mini__split-gop" style="width:50.4%;"></div>
+            </div>
+            <div class="tgk-politics-mini__split-labels">
+              <span>Dem 48.6%</span>
+              <span>Rep 50.4%</span>
+            </div>
+          </div>
+
+          <div class="tgk-politics-mini__survival">
+            <span class="tgk-politics-mini__survival-main">49% survival chance</span>
+            <span class="tgk-politics-mini__survival-odds">≈ 1 in 2.0</span>
+          </div>
+        </article>
+      </div>
+
+      <p class="tgk-politics-mini__footnote">
+        <strong>“Survival chance”</strong> is the model-based probability of making it through Thanksgiving dinner
+        without a major political argument, combining partisan margins with alcohol, stress, family tension,
+        and NFL rivalry data.<br>
+        <strong>Source:</strong> Action Network Thanksgiving Survival Index 2025.
+      </p>
+
+      <div class="tgk-politics-mini__share" aria-live="polite">
+        <strong>Share this graphic:</strong><br>
+        <button type="button" class="embed-toggle" aria-controls="embed-\${uid}" aria-expanded="false">
+          Get Embed Code
+        </button>
+        <div id="embed-\${uid}" class="tgk-politics-mini__embed" hidden>
+          <textarea class="embed-textarea" readonly></textarea>
+        </div>
+      </div>
+    </section>
+  `;
+
+  // Embed generator (scriptless)
+  const embedWrap = shadow.getElementById(`embed-${uid}`);
+  const embedBtn  = shadow.querySelector('.embed-toggle');
+  const embedBox  = embedWrap ? embedWrap.querySelector('textarea.embed-textarea') : null;
+
+  if (embedBtn && embedWrap && embedBox){
+    embedBtn.addEventListener('click', ()=>{
+      const hidden = embedWrap.hasAttribute('hidden');
+      if (hidden) {
+        embedWrap.removeAttribute('hidden');
+      } else {
+        embedWrap.setAttribute('hidden','');
+      }
+      embedBtn.setAttribute('aria-expanded', String(hidden));
+    });
+
+    embedBox.value = `<!-- BEGIN: Action Network — Politics at the Table (Scriptless Embed) -->
+<section class="an-politics-embed" role="region" aria-labelledby="an-politics-embed-title" style="max-width:760px;margin:16px auto;">
+  <style>
+    .an-politics-embed,.an-politics-embed *{box-sizing:border-box}
+    .an-politics-embed{
+      --cranberry:#B22B3B;--pumpkin:#E87524;--sage:#A6B58E;--sage-light:#E4EAD5;--beige:#F9F6F1;--charcoal:#2C2C2C;--border:#E3E0D6;
+      margin:0;padding:14px 14px 16px;border-radius:14px;
+      border:1px solid rgba(0,0,0,0.05);
+      background:linear-gradient(135deg,#FFFFFF,var(--beige));
+      color:var(--charcoal);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      font-size:14px;
+    }
+    .an-politics-embed__eyebrow{
+      text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;font-weight:700;color:#7a7467;margin-bottom:.15rem;
+    }
+    .an-politics-embed__title{
+      margin:0 0 .35rem;font-size:1.15rem;font-weight:800;
+    }
+    .an-politics-embed__sub{
+      margin:0 0 .8rem;font-size:.83rem;color:#5f625e;
+    }
+    .an-politics-embed__grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.75rem;
+    }
+    .an-politics-embed__card{
+      background:#fff;border-radius:12px;border:1px solid rgba(0,0,0,0.04);padding:.75rem .85rem .8rem;font-size:.8rem;
+    }
+    .an-politics-embed__card:nth-child(1){
+      background:radial-gradient(circle at top left,rgba(178,43,59,0.08),#fff);border-color:rgba(178,43,59,0.25);
+    }
+    .an-politics-embed__card:nth-child(3){
+      background:radial-gradient(circle at top right,rgba(232,117,36,0.08),#fff);border-color:rgba(232,117,36,0.22);
+    }
+    .an-politics-embed__state{
+      display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.2rem;
+    }
+    .an-politics-embed__state-name{font-weight:800;font-size:.9rem;}
+    .an-politics-embed__state-rank{text-transform:uppercase;letter-spacing:.08em;font-size:.6rem;color:#8a8376;font-weight:700;}
+    .an-politics-embed__split-bar{
+      position:relative;height:8px;border-radius:999px;background:#F1EBDF;overflow:hidden;margin-bottom:.2rem;
+    }
+    .an-politics-embed__split-dem,.an-politics-embed__split-gop{
+      position:absolute;top:0;bottom:0;
+    }
+    .an-politics-embed__split-dem{left:0;background:var(--sage-light);}
+    .an-politics-embed__split-gop{right:0;background:var(--cranberry);opacity:.85;}
+    .an-politics-embed__split-labels{
+      display:flex;justify-content:space-between;font-size:.68rem;color:#555;
+    }
+    .an-politics-embed__survival{
+      display:flex;justify-content:space-between;align-items:baseline;margin-top:.2rem;
+    }
+    .an-politics-embed__survival-main{font-weight:700;font-size:.8rem;}
+    .an-politics-embed__survival-odds{font-size:.7rem;color:#666;}
+    .an-politics-embed__footnote{
+      margin:.7rem 0 0;font-size:.72rem;color:#777;
+    }
+    .an-politics-embed__footnote a{
+      color:#E87524;text-decoration:none;border-bottom:1px dotted currentColor;
+    }
+  </style>
+
+  <div class="an-politics-embed__eyebrow">Politics at the Table</div>
+  <h2 id="an-politics-embed-title" class="an-politics-embed__title">Swing States, Spicier Dinners</h2>
+  <p class="an-politics-embed__sub">
+    In the most evenly split states, Thanksgiving conversations are statistically more likely to turn political — and tense.
+  </p>
+
+  <div class="an-politics-embed__grid">
+    <article class="an-politics-embed__card">
+      <div class="an-politics-embed__state">
+        <span class="an-politics-embed__state-name">Wisconsin</span>
+        <span class="an-politics-embed__state-rank">Most divided</span>
+      </div>
+      <div class="an-politics-embed__split-bar" aria-hidden="true">
+        <div class="an-politics-embed__split-dem" style="width:48.7%;"></div>
+        <div class="an-politics-embed__split-gop" style="width:49.6%;"></div>
+      </div>
+      <div class="an-politics-embed__split-labels">
+        <span>Dem 48.7%</span><span>Rep 49.6%</span>
+      </div>
+      <div class="an-politics-embed__survival">
+        <span class="an-politics-embed__survival-main">53% survival chance</span>
+        <span class="an-politics-embed__survival-odds">≈ 1 in 1.9</span>
+      </div>
+    </article>
+
+    <article class="an-politics-embed__card">
+      <div class="an-politics-embed__state">
+        <span class="an-politics-embed__state-name">Michigan</span>
+        <span class="an-politics-embed__state-rank">Battleground</span>
+      </div>
+      <div class="an-politics-embed__split-bar" aria-hidden="true">
+        <div class="an-politics-embed__split-dem" style="width:48.3%;"></div>
+        <div class="an-politics-embed__split-gop" style="width:49.7%;"></div>
+      </div>
+      <div class="an-politics-embed__split-labels">
+        <span>Dem 48.3%</span><span>Rep 49.7%</span>
+      </div>
+      <div class="an-politics-embed__survival">
+        <span class="an-politics-embed__survival-main">55% survival chance</span>
+        <span class="an-politics-embed__survival-odds">≈ 1 in 1.8</span>
+      </div>
+    </article>
+
+    <article class="an-politics-embed__card">
+      <div class="an-politics-embed__state">
+        <span class="an-politics-embed__state-name">Pennsylvania</span>
+        <span class="an-politics-embed__state-rank">High risk</span>
+      </div>
+      <div class="an-politics-embed__split-bar" aria-hidden="true">
+        <div class="an-politics-embed__split-dem" style="width:48.6%;"></div>
+        <div class="an-politics-embed__split-gop" style="width:50.4%;"></div>
+      </div>
+      <div class="an-politics-embed__split-labels">
+        <span>Dem 48.6%</span><span>Rep 50.4%</span>
+      </div>
+      <div class="an-politics-embed__survival">
+        <span class="an-politics-embed__survival-main">49% survival chance</span>
+        <span class="an-politics-embed__survival-odds">≈ 1 in 2.0</span>
+      </div>
+    </article>
+  </div>
+
+  <p class="an-politics-embed__footnote">
+    <strong>“Survival chance”</strong> is the model-based probability of making it through Thanksgiving dinner without a major political argument, combining partisan margins with alcohol, stress, family tension, and NFL rivalry data.
+    Source: <a href="https://www.actionnetwork.com/holiday/thanksgiving-survival-index-2025" target="_blank" rel="noopener">Action Network — Thanksgiving Survival Index 2025</a>.
+  </p>
+</section>
+<!-- END: Action Network — Politics at the Table (Scriptless Embed) -->`;
+  }
+
+  // No JSON-LD injected here to avoid duplicate head markup.
+})();
+</script>
+
+
