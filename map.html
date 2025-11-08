@@ -53,13 +53,6 @@
       margin: 0 0 1rem;
     }
 
-    .lede {
-      max-width: 640px;
-      font-size: 1.05rem;
-      line-height: 1.5;
-      margin-bottom: 1.8rem;
-    }
-
     .card {
       background: var(--white);
       border-radius: var(--border-radius);
@@ -69,7 +62,7 @@
       border: 1px solid var(--border-soft);
     }
 
-    /* Legend: horizontal gradient bar */
+    /* Legend */
     .legend {
       margin-bottom: 1.5rem;
     }
@@ -93,12 +86,50 @@
         #E87524 75%,
         #B22B3B 100%);
       border: 1px solid rgba(0,0,0,0.1);
-      margin-bottom: 0.35rem;
     }
 
     .legend-labels {
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-top: 0.4rem;
+    }
+
+    .legend-labels span {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      font-size: 0.85rem;
+    }
+
+    .legend-labels span strong {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.8rem;
+      background: #fffdfa;
+      border: 1px solid rgba(0,0,0,0.06);
+      white-space: nowrap;
+    }
+
+    .legend-labels span:first-child strong {
+      color: #3d4a2c; /* darker sage for contrast */
+    }
+
+    .legend-labels span:last-child {
+      text-align: right;
+    }
+
+    .legend-labels span:last-child strong {
+      color: var(--cranberry);
+    }
+
+    .legend-labels span small {
+      margin-top: 3px;
       font-size: 0.8rem;
       color: #555;
     }
@@ -106,6 +137,7 @@
     .map-wrapper {
       width: 100%;
       overflow: hidden;
+      margin-top: 0.75rem;
     }
 
     svg#feud-map {
@@ -132,40 +164,36 @@
     }
 
     .tooltip {
-  position: absolute;
-  pointer-events: none;
-  background: #fffdfa; /* off-white, warmer than pure white */
-  border-radius: 10px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-  border: 1px solid rgba(0,0,0,0.08);
-  padding: 0.65rem 0.85rem;
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: #2c2c2c;
-  display: none;
-  z-index: 10;
-  max-width: 240px;
-  transition: opacity 0.1s ease, transform 0.1s ease;
-  transform: translateY(0);
-}
+      position: absolute;
+      pointer-events: none;
+      background: #fffdfa;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 0.65rem 0.85rem;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #2c2c2c;
+      display: none;
+      z-index: 10;
+      max-width: 240px;
+      transition: opacity 0.1s ease, transform 0.1s ease;
+      transform: translateY(0);
+    }
 
-.tooltip strong {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-  font-size: 0.86rem;
-  color: #111;
-}
+    .tooltip strong {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+      font-size: 0.86rem;
+      color: #111;
+    }
 
-.tooltip em {
-  font-style: normal;
-  color: #B22B3B; /* subtle cranberry accent for odds */
-  font-weight: 600;
-}
-
-
-
-
+    .tooltip em {
+      font-style: normal;
+      color: #B22B3B;
+      font-weight: 600;
+    }
 
     /* Tables */
     .tables-wrapper {
@@ -340,21 +368,24 @@
 <body>
 <main>
   <section class="card">
-<h1>Thanksgiving Survival Odds 2025</h1>
-<h2>Which states are most likely to survive Thanksgiving dinner?</h2>
+    <h1>Thanksgiving Survival Odds 2025</h1>
+    <h2>Which states are most likely to survive Thanksgiving dinner?</h2>
 
     <!-- Legend -->
-
-  <div class="legend">
-  <div class="legend-title">Thanksgiving dinner survival odds</div>
-  <div class="legend-gradient"></div>
-  <div class="legend-labels">
-    <span>Best odds<br><small>≈80%+ — “we’re fine”</small></span>
-    <span>Worst odds<br><small>&lt;50% — “pass the wine”</small></span>
-  </div>
-</div>
-
-
+    <div class="legend">
+      <div class="legend-title">Thanksgiving dinner survival odds</div>
+      <div class="legend-gradient"></div>
+      <div class="legend-labels">
+        <span>
+          <strong>Best odds</strong>
+          <small>≈80%+ — “we’re fine”</small>
+        </span>
+        <span>
+          <strong>Worst odds</strong>
+          <small>&lt;50% — “pass the wine”</small>
+        </span>
+      </div>
+    </div>
 
     <!-- Map -->
     <div class="map-wrapper">
@@ -363,18 +394,20 @@
         viewBox="0 0 975 610"
         role="img"
         aria-labelledby="map-title map-desc">
-        <title id="map-title"></title>
-<desc id="map-desc"></desc>
-
+        <title id="map-title">Thanksgiving Survival Odds 2025 — by U.S. state</title>
+        <desc id="map-desc">
+          Choropleth map of U.S. states shaded by their estimated odds of surviving
+          Thanksgiving dinner without a major family feud.
+        </desc>
       </svg>
     </div>
 
- <p class="map-caption">
-  States are shaded by their estimated odds of surviving Thanksgiving without a major family feud — from pale sage (≈80%+ implied chance of a peaceful dinner) to deep cranberry (under 50%). 
-  Based on data around stress, politics, alcohol, and family tension, it’s part math, part mayhem — and should probably come with a side of pie.
-</p>
-
-
+    <p class="map-caption">
+      States are shaded by their estimated odds of surviving Thanksgiving without a major
+      family feud — from pale sage (≈80%+ implied chance of a peaceful dinner) to deep
+      cranberry (under 50%). Based on data around stress, politics, alcohol, and family
+      tension, it’s part math, part mayhem — and should probably come with a side of pie.
+    </p>
 
     <!-- Tables -->
     <div class="tables-wrapper">
@@ -382,8 +415,8 @@
       <div>
         <h3>States Least Likely to Survive Thanksgiving</h3>
         <p class="map-caption" style="margin-top:0.25rem;font-size:0.8rem;color:#777;">
- Based on modeled, implied odds of surviving Thanksgiving dinner without a family blow-up.
-</p>
+          Based on modeled, implied odds of surviving Thanksgiving dinner without a family blow-up.
+        </p>
         <table>
           <thead>
           <tr>
@@ -411,10 +444,9 @@
       <!-- Best odds -->
       <div>
         <h3>States Most Likely to Survive Thanksgiving</h3>
-<p class="map-caption" style="margin-top:0.25rem;font-size:0.8rem;color:#777;">
-  Based on modeled, implied odds of surviving Thanksgiving dinner without a family blow-up.
-</p>
-
+        <p class="map-caption" style="margin-top:0.25rem;font-size:0.8rem;color:#777;">
+          Based on modeled, implied odds of surviving Thanksgiving dinner without a family blow-up.
+        </p>
         <table>
           <thead>
           <tr>
@@ -470,9 +502,9 @@
     All figures represent model-based, implied probabilities and are not predictions
     for any specific household.
     Source:
-    <a href="https://www.actionnetwork.com/general/thanksgiving-survival-odds-2025/"
+    <a href="https://www.actionnetwork.com/holiday/thanksgiving-survival-index-2025"
        target="_blank" rel="noopener">
-      Action Network — Thanksgiving Survival Odds 2025
+      Action Network — Thanksgiving Survival Index 2025
     </a>
   </p>
 </main>
@@ -481,7 +513,8 @@
 
 <script>
   /* Canonical published URL for this graphic */
-  const CANONICAL_URL = "https://www.actionnetwork.com/general/thanksgiving-survival-odds-2025/";
+  const CANONICAL_URL =
+    "https://www.actionnetwork.com/holiday/thanksgiving-survival-index-2025";
 
   // Data keyed by full state name
   const feudData = {
@@ -582,13 +615,13 @@
         const surv = data.survival.toFixed(1);
         const odds = (100 / data.survival).toFixed(2);
 
-       tooltip
-  .style("display", "block")
-  .html(
-    `<strong>${name} (${data.abbr})</strong>
-     ${surv}% chance of surviving (≈ 1 in ${odds})<br>
-     Rank: ${data.rank} of 50 (1 = best odds)`
-  );
+        tooltip
+          .style("display", "block")
+          .html(
+            `<strong>${name} (${data.abbr})</strong>
+             ${surv}% chance of surviving (≈ 1 in ${odds})<br>
+             Rank: ${data.rank} of 50 (1 = best odds)`
+          );
 
         const ttNode = tooltip.node();
         const rect = ttNode.getBoundingClientRect();
@@ -627,7 +660,7 @@
           style="border:1px solid #E3E0D6;border-radius:12px;background:#fff"
           title="Thanksgiving Survival Odds 2025 — Estimated survival by state"></iframe>
   <p style="text-align:right;font-size:12px;color:#7a7467;margin-top:6px">
-    Source: <a href="${CANONICAL_URL}" target="_blank" rel="noopener">Action Network — Thanksgiving Survival Odds 2025</a>
+    Source: <a href="${CANONICAL_URL}" target="_blank" rel="noopener">Action Network — Thanksgiving Survival Index 2025</a>
     (model-based, implied probabilities).
   </p>
 </div>
@@ -665,6 +698,3 @@
 </script>
 </body>
 </html>
-
-
-
