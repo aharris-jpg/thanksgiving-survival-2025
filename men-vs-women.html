@@ -1,0 +1,478 @@
+<!-- Action Network – Thanksgiving Survival Odds by Gender (Drop-in, fully isolated) -->
+<div class="an-gender-widget"></div>
+<script>
+(function(){
+  const host = document.currentScript.previousElementSibling;
+  if (!host || !host.classList.contains('an-gender-widget')) return;
+
+  const shadow = host.attachShadow({ mode: 'open' });
+  const uid = 'tg' + Math.random().toString(36).slice(2,8);
+  const CANONICAL_URL = 'https://www.actionnetwork.com/holiday/thanksgiving-survival-index-2025';
+
+  shadow.innerHTML = `
+    <section class="gender-odds" aria-labelledby="gender-odds-title-${uid}" role="region">
+      <style>
+        :host,
+        .gender-odds,
+        .gender-odds * { box-sizing: border-box; }
+
+        .gender-odds {
+          --cranberry:#B22B3B;
+          --pumpkin:#E87524;
+          --mustard:#F1C232;
+          --sage:#A6B58E;
+          --sage-light:#E4EAD5;
+          --beige:#F9F6F1;
+          --charcoal:#2C2C2C;
+          --border:#E3E0D6;
+
+          max-width:900px;
+          margin:0 auto;
+          padding:1.4rem 1.6rem 1.5rem;
+          border-radius:16px;
+          border:1px solid rgba(0,0,0,0.05);
+          background:linear-gradient(135deg,#FFFFFF,var(--beige));
+          box-shadow:0 10px 24px rgba(0,0,0,0.06);
+          font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+          color:var(--charcoal);
+          position:relative;
+        }
+
+        .gender-odds::before{
+          content:"";
+          position:absolute;
+          inset:0 0 auto 0;
+          height:4px;
+          background:linear-gradient(90deg,#E4EAD5,#A6B58E,#F1C232,#E87524,#B22B3B);
+          border-top-left-radius:16px;
+          border-top-right-radius:16px;
+        }
+
+        .gender-odds__eyebrow{
+          margin-top:0.35rem;
+          text-transform:uppercase;
+          letter-spacing:0.08em;
+          font-size:0.78rem;
+          font-weight:700;
+          color:#7a7467;
+        }
+
+        .gender-odds__title{
+          margin:0.1rem 0 0.5rem;
+          font-size:1.45rem;
+          font-weight:800;
+        }
+
+        .gender-odds__subtitle{
+          margin:0;
+          font-size:0.95rem;
+          color:#5f625e;
+          max-width:640px;
+        }
+
+        .gender-odds__grid{
+          display:grid;
+          grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+          gap:1.3rem;
+          margin-top:1.1rem;
+        }
+
+        .gender-card{
+          border-radius:14px;
+          padding:0.9rem 1rem 1rem;
+          border:1px solid rgba(0,0,0,0.05);
+          background:#ffffff;
+          position:relative;
+        }
+
+        .gender-card--women{
+          border-color:rgba(178,43,59,0.28);
+          background:radial-gradient(circle at top left,rgba(178,43,59,0.08),#ffffff);
+        }
+
+        .gender-card--men{
+          border-color:rgba(232,117,36,0.24);
+          background:radial-gradient(circle at top right,rgba(232,117,36,0.08),#ffffff);
+        }
+
+        .gender-card__label{
+          display:inline-flex;
+          align-items:center;
+          gap:0.5rem;
+          font-size:0.84rem;
+          font-weight:700;
+          text-transform:uppercase;
+          letter-spacing:0.08em;
+          margin-bottom:0.35rem;
+        }
+
+        .gender-card__chip{
+          width:9px;
+          height:9px;
+          border-radius:999px;
+        }
+
+        .gender-card--women .gender-card__chip{ background:var(--cranberry); }
+        .gender-card--men   .gender-card__chip{ background:var(--pumpkin); }
+
+        .gender-card__headline{
+          display:flex;
+          align-items:baseline;
+          gap:0.35rem;
+          margin-bottom:0.15rem;
+        }
+
+        .gender-card__percent{
+          font-size:2.4rem;
+          font-weight:800;
+          line-height:1;
+        }
+
+        .gender-card__meta{
+          font-size:0.9rem;
+          color:#5f625e;
+        }
+
+        .gender-card__meta em{
+          font-style:normal;
+          font-weight:600;
+        }
+
+        .gender-card__bar{
+          margin:0.65rem 0 0.55rem;
+          height:8px;
+          border-radius:999px;
+          background:#F1EBDF;
+          overflow:hidden;
+          position:relative;
+        }
+
+        .gender-card__bar-fill{
+          height:100%;
+          width:calc(var(--prob,50)*1%);
+          border-radius:inherit;
+          background:linear-gradient(90deg,var(--sage),var(--mustard));
+        }
+
+        .gender-card--women .gender-card__bar-fill{
+          background:linear-gradient(90deg,var(--sage-light),var(--cranberry));
+        }
+        .gender-card--men .gender-card__bar-fill{
+          background:linear-gradient(90deg,var(--sage),var(--pumpkin));
+        }
+
+        .gender-card__subcopy{
+          margin:0 0 0.5rem;
+          font-size:0.86rem;
+          color:#5f625e;
+        }
+
+        .gender-card__list{
+          list-style:none;
+          padding:0;
+          margin:0;
+          font-size:0.86rem;
+          color:#444;
+        }
+
+        .gender-card__list li{
+          display:flex;
+          gap:0.4rem;
+          margin-bottom:0.25rem;
+        }
+
+        .gender-card__bullet{
+          font-weight:700;
+          font-size:0.8rem;
+          margin-right:0.1rem;
+          color:#999;
+        }
+
+        .gender-odds__footer{
+          margin:0.9rem 0 0;
+          font-size:0.82rem;
+          color:#777;
+        }
+
+        .gender-odds__footer strong{ font-weight:700; }
+
+        .gender-odds__sources{
+          margin-top:0.3rem;
+          font-style:italic;
+          font-size:0.78rem;
+          color:#777;
+        }
+
+        .gender-odds__share{
+          margin-top:0.9rem;
+          padding-top:0.75rem;
+          border-top:1px solid rgba(0,0,0,0.08);
+          font-size:0.8rem;
+          color:#777;
+        }
+
+        .gender-odds__share-title{
+          font-weight:700;
+          margin:0 0 0.25rem;
+          font-size:0.86rem;
+          color:#5f625e;
+        }
+
+        .embed-toggle{
+          appearance:none;
+          border:1px solid var(--border);
+          background:#fff;
+          border-radius:8px;
+          padding:6px 10px;
+          cursor:pointer;
+          font-weight:700;
+          font-size:0.82rem;
+        }
+
+        .embed-toggle:hover{
+          background:#fffdfa;
+        }
+
+        .embed-wrap[hidden]{ display:none; }
+
+        textarea.embed-box{
+          width:100%;
+          height:190px;
+          border-radius:10px;
+          border:1px solid var(--border);
+          padding:0.6rem 0.7rem;
+          margin-top:0.5rem;
+          font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+          resize:none;
+          background:#fff;
+          color:inherit;
+        }
+
+        @media (max-width:720px){
+          .gender-odds{
+            padding:1.1rem 1rem 1.2rem;
+          }
+          .gender-odds__grid{
+            grid-template-columns:minmax(0,1fr);
+          }
+          .gender-card{
+            padding:0.85rem 0.9rem 0.9rem;
+          }
+        }
+      </style>
+
+      <div class="gender-odds__eyebrow">Thanksgiving Survival Odds · By Gender</div>
+      <h2 id="gender-odds-title-${uid}" class="gender-odds__title">Are Men or Women More Likely to Survive Thanksgiving?</h2>
+      <p class="gender-odds__subtitle">
+        Our model suggests men have slightly higher odds of a drama-free dinner — but women carry most of the stress, sleep loss, and holiday labor that keeps the day afloat.
+      </p>
+
+      <div class="gender-odds__grid">
+        <article class="gender-card gender-card--women" aria-label="Estimated survival odds for women on Thanksgiving">
+          <div class="gender-card__label">
+            <span class="gender-card__chip" aria-hidden="true"></span>
+            Women
+          </div>
+          <div class="gender-card__headline">
+            <span class="gender-card__percent">58%</span>
+            <span class="gender-card__meta">
+              <em>≈ 1 in 1.7</em> chance of a peaceful dinner
+            </span>
+          </div>
+          <div class="gender-card__bar" aria-hidden="true">
+            <div class="gender-card__bar-fill" style="--prob:58;"></div>
+          </div>
+          <p class="gender-card__subcopy">
+            Higher stress, less rest, and more responsibility — women are doing more to hold the day together.
+          </p>
+          <ul class="gender-card__list">
+            <li><span class="gender-card__bullet">•</span><span>44% say their holiday stress goes up; only 27% feel they can truly relax.</span></li>
+            <li><span class="gender-card__bullet">•</span><span>27% say they do <strong>all</strong> the Thanksgiving cooking.</span></li>
+            <li><span class="gender-card__bullet">•</span><span>37% report worse mental health across the holiday season.</span></li>
+          </ul>
+        </article>
+
+        <article class="gender-card gender-card--men" aria-label="Estimated survival odds for men on Thanksgiving">
+          <div class="gender-card__label">
+            <span class="gender-card__chip" aria-hidden="true"></span>
+            Men
+          </div>
+          <div class="gender-card__headline">
+            <span class="gender-card__percent">67%</span>
+            <span class="gender-card__meta">
+              <em>≈ 1 in 1.5</em> chance of a peaceful dinner
+            </span>
+          </div>
+          <div class="gender-card__bar" aria-hidden="true">
+            <div class="gender-card__bar-fill" style="--prob:67;"></div>
+          </div>
+          <p class="gender-card__subcopy">
+            Men report lower stress and more time to relax — but their risk goes up fast when alcohol enters the chat.
+          </p>
+          <ul class="gender-card__list">
+            <li><span class="gender-card__bullet">•</span><span>31% say holiday stress rises; 41% say they can actually relax.</span></li>
+            <li><span class="gender-card__bullet">•</span><span>More likely to do <strong>none</strong> of the clean-up after dinner.</span></li>
+            <li><span class="gender-card__bullet">•</span><span>When they expect a “fun” day, men who drink are more likely to over-consume.</span></li>
+          </ul>
+        </article>
+      </div>
+
+      <p class="gender-odds__footer">
+        <strong>Takeaway:</strong> Men may have slightly better survival odds on paper — but without the extra work women do in the kitchen and in the group chat, those odds would look a lot worse.
+      </p>
+
+      <p class="gender-odds__sources">
+        <strong>Sources:</strong> APA &amp; DISC Insights; YouGov; Penn State Abington; Sleepopolis Holiday Survey; O’Hara et al. (2020). Figures drawn from national surveys on holiday stress, household labor, sleep, and drinking behavior, adapted into Action Network’s Thanksgiving Survival model.
+      </p>
+
+      <div class="gender-odds__share" aria-live="polite">
+        <p class="gender-odds__share-title">Share this gender breakdown</p>
+        <button type="button" class="embed-toggle" aria-controls="embed-${uid}" aria-expanded="false">
+          Get Embed Code
+        </button>
+        <div id="embed-${uid}" class="embed-wrap" hidden>
+          <textarea class="embed-box" readonly></textarea>
+        </div>
+      </div>
+    </section>
+  `;
+
+  const embedWrap = shadow.getElementById(`embed-${uid}`);
+  const embedBtn  = shadow.querySelector('.embed-toggle');
+  const embedBox  = embedWrap.querySelector('textarea.embed-box');
+
+  if (embedBtn && embedBox){
+    embedBtn.addEventListener('click', ()=>{
+      const hidden = embedWrap.hasAttribute('hidden');
+      if (hidden) embedWrap.removeAttribute('hidden'); else embedWrap.setAttribute('hidden','');
+      embedBtn.setAttribute('aria-expanded', String(hidden));
+    });
+
+    embedBox.value = `<!-- BEGIN: Action Network — Thanksgiving Survival Odds by Gender (Scriptless Embed) -->
+<section class="an-thanksgiving-gender-embed" role="region" aria-labelledby="an-gender-title" style="max-width:900px;margin:16px auto;">
+  <style>
+    .an-thanksgiving-gender-embed,.an-thanksgiving-gender-embed *{box-sizing:border-box}
+    .an-thanksgiving-gender-embed{
+      --cranberry:#B22B3B;--pumpkin:#E87524;--mustard:#F1C232;--sage:#A6B58E;--sage-light:#E4EAD5;
+      --beige:#F9F6F1;--charcoal:#2C2C2C;--border:#E3E0D6;
+      color:var(--charcoal);
+      background:linear-gradient(135deg,#FFFFFF,var(--beige));
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,0.05);
+      padding:16px 16px 18px;
+      font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      box-shadow:0 10px 24px rgba(0,0,0,0.06);
+      position:relative;
+    }
+    .an-thanksgiving-gender-embed::before{
+      content:"";position:absolute;inset:0 0 auto 0;height:4px;
+      background:linear-gradient(90deg,#E4EAD5,#A6B58E,#F1C232,#E87524,#B22B3B);
+      border-top-left-radius:16px;border-top-right-radius:16px;
+    }
+    .an-thanksgiving-gender-embed .eyebrow{
+      margin-top:.35rem;text-transform:uppercase;letter-spacing:.08em;font-size:.78rem;font-weight:700;color:#7a7467;
+    }
+    .an-thanksgiving-gender-embed h2{
+      margin:.1rem 0 .4rem;font-weight:800;font-size:1.4rem;
+    }
+    .an-thanksgiving-gender-embed .sub{margin:0 0 10px;font-size:.93rem;color:#5f625e;max-width:640px;}
+    .an-thanksgiving-gender-embed .grid{
+      display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    }
+    .an-thanksgiving-gender-embed .card{
+      border-radius:14px;padding:10px 12px 12px;border:1px solid rgba(0,0,0,0.05);background:#fff;
+    }
+    .an-thanksgiving-gender-embed .card.women{
+      border-color:rgba(178,43,59,0.28);
+      background:radial-gradient(circle at top left,rgba(178,43,59,0.08),#ffffff);
+    }
+    .an-thanksgiving-gender-embed .card.men{
+      border-color:rgba(232,117,36,0.24);
+      background:radial-gradient(circle at top right,rgba(232,117,36,0.08),#ffffff);
+    }
+    .an-thanksgiving-gender-embed .label{
+      display:inline-flex;align-items:center;gap:6px;font-size:.84rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;
+    }
+    .an-thanksgiving-gender-embed .chip{
+      width:9px;height:9px;border-radius:999px;
+    }
+    .an-thanksgiving-gender-embed .chip.w{background:var(--cranberry);}
+    .an-thanksgiving-gender-embed .chip.m{background:var(--pumpkin);}
+    .an-thanksgiving-gender-embed .head{
+      display:flex;align-items:baseline;gap:6px;margin-bottom:2px;
+    }
+    .an-thanksgiving-gender-embed .pct{
+      font-size:2.2rem;font-weight:800;line-height:1;
+    }
+    .an-thanksgiving-gender-embed .meta{
+      font-size:.9rem;color:#5f625e;
+    }
+    .an-thanksgiving-gender-embed .meta em{font-style:normal;font-weight:600;}
+    .an-thanksgiving-gender-embed .bar{
+      margin:6px 0 6px;height:8px;border-radius:999px;background:#F1EBDF;overflow:hidden;
+    }
+    .an-thanksgiving-gender-embed .fill{
+      height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--sage-light),var(--cranberry));
+    }
+    .an-thanksgiving-gender-embed .card.men .fill{
+      background:linear-gradient(90deg,var(--sage),var(--pumpkin));
+    }
+    .an-thanksgiving-gender-embed .subcopy{margin:0 0 4px;font-size:.85rem;color:#5f625e;}
+    .an-thanksgiving-gender-embed ul{margin:0;padding-left:1.05rem;font-size:.85rem;color:#444;}
+    .an-thanksgiving-gender-embed li{margin-bottom:3px;}
+    .an-thanksgiving-gender-embed .foot{
+      margin:8px 0 0;font-size:.8rem;color:#777;
+    }
+    .an-thanksgiving-gender-embed .foot strong{font-weight:700;}
+    @media (max-width:640px){
+      .an-thanksgiving-gender-embed{padding:14px 12px 16px;}
+    }
+  </style>
+
+  <div class="eyebrow">Thanksgiving Survival Odds · By Gender</div>
+  <h2 id="an-gender-title">Are Men or Women More Likely to Survive Thanksgiving?</h2>
+  <p class="sub">Estimated odds of a peaceful Thanksgiving dinner, based on survey data around holiday stress, household labor, sleep, and drinking behavior.</p>
+
+  <div class="grid">
+    <article class="card women">
+      <div class="label"><span class="chip w" aria-hidden="true"></span>Women</div>
+      <div class="head">
+        <span class="pct">58%</span>
+        <span class="meta"><em>≈ 1 in 1.7</em> chance of a peaceful dinner</span>
+      </div>
+      <div class="bar" aria-hidden="true"><div class="fill" style="width:58%;"></div></div>
+      <p class="subcopy">Higher stress, less rest, and more responsibility — women are doing more to hold the day together.</p>
+      <ul>
+        <li>44% say their holiday stress goes up; only 27% feel they can truly relax.</li>
+        <li>27% say they do all of the Thanksgiving cooking.</li>
+        <li>37% report worse mental health across the holiday season.</li>
+      </ul>
+    </article>
+
+    <article class="card men">
+      <div class="label"><span class="chip m" aria-hidden="true"></span>Men</div>
+      <div class="head">
+        <span class="pct">67%</span>
+        <span class="meta"><em>≈ 1 in 1.5</em> chance of a peaceful dinner</span>
+      </div>
+      <div class="bar" aria-hidden="true"><div class="fill" style="width:67%;"></div></div>
+      <p class="subcopy">Men report lower stress and more time to relax — but risk climbs quickly when alcohol enters the chat.</p>
+      <ul>
+        <li>31% say holiday stress rises; 41% say they can actually relax.</li>
+        <li>More likely to do none of the clean-up after dinner.</li>
+        <li>Men who drink are more likely to over-consume on “fun” days.</li>
+      </ul>
+    </article>
+  </div>
+
+  <p class="foot">
+    <strong>Source:</strong> Action Network analysis of APA &amp; DISC Insights, YouGov, Penn State Abington, Sleepopolis Holiday Survey, and O’Hara et al. (2020), adapted into the Thanksgiving Survival Index.
+    View the full study at <a href="${CANONICAL_URL}" target="_blank" rel="noopener">${CANONICAL_URL}</a>.
+  </p>
+</section>
+<!-- END: Action Network — Thanksgiving Survival Odds by Gender (Scriptless Embed) -->`;
+  }
+})();
+</script>
+
+
