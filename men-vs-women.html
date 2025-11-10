@@ -2,6 +2,21 @@
 <div class="an-gender-widget"></div>
 <script>
 (function(){
+  /* Remove default page margin/padding inside the iframe */
+  try {
+    if (document.documentElement) {
+      document.documentElement.style.margin = '0';
+      document.documentElement.style.padding = '0';
+    }
+    if (document.body) {
+      document.body.style.margin = '0';
+      document.body.style.padding = '0';
+      document.body.style.background = 'transparent';
+    }
+  } catch (e) {
+    // fail silently if not allowed
+  }
+
   const host = document.currentScript.previousElementSibling;
   if (!host || !host.classList.contains('an-gender-widget')) return;
 
@@ -35,7 +50,7 @@
           --border:#E3E0D6;
 
           margin:0;
-          padding:1.05rem 1.15rem 1.15rem; /* slightly tighter */
+          padding:0.9rem 1rem 1rem; /* slightly tighter than before */
           border-radius:16px;
           border:1px solid rgba(0,0,0,0.05);
           background:linear-gradient(135deg,#FFFFFF,var(--beige));
@@ -86,7 +101,7 @@
 
         .gender-card{
           border-radius:14px;
-          padding:0.85rem 0.95rem 0.95rem;
+          padding:0.8rem 0.9rem 0.9rem;
           border:1px solid rgba(0,0,0,0.05);
           background:#ffffff;
           position:relative;
@@ -257,14 +272,14 @@
 
         @media (max-width:720px){
           .gender-odds{
-            padding:0.95rem 0.95rem 1.05rem;
+            padding:0.8rem 0.9rem 0.95rem;
           }
           .gender-odds__grid{
             grid-template-columns:minmax(0,1fr);
             gap:0.85rem;
           }
           .gender-card{
-            padding:0.8rem 0.9rem 0.9rem;
+            padding:0.75rem 0.85rem 0.85rem;
           }
         }
       </style>
@@ -338,7 +353,7 @@
         <button type="button" class="embed-toggle" aria-controls="embed-\${uid}" aria-expanded="false">
           Get Embed Code
         </button>
-        <div id="embed-\${uid}" class="embed-wrap" hidden>
+        <div id="embed-\${uid}" class="gender-odds__embed-wrap embed-wrap" hidden>
           <textarea class="embed-box" readonly></textarea>
         </div>
       </div>
@@ -347,7 +362,7 @@
 
   const embedWrap = shadow.getElementById(`embed-${uid}`);
   const embedBtn  = shadow.querySelector('.embed-toggle');
-  const embedBox  = embedWrap.querySelector('textarea.embed-box');
+  const embedBox  = embedWrap ? embedWrap.querySelector('textarea.embed-box') : null;
 
   if (embedBtn && embedBox){
     embedBtn.addEventListener('click', ()=>{
