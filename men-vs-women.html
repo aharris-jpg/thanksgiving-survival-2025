@@ -10,8 +10,16 @@
   const CANONICAL_URL = 'https://www.actionnetwork.com/general/thanksgiving-survival-index-2025';
 
   shadow.innerHTML = `
-    <section class="gender-odds" aria-labelledby="gender-odds-title-${uid}" role="region">
+    <section class="gender-odds" aria-labelledby="gender-odds-title-\${uid}" role="region">
       <style>
+        :host {
+          display:block;
+          max-width:900px;
+          margin:0 auto;
+          padding:clamp(8px,1.8vw,14px);
+          box-sizing:border-box;
+        }
+
         :host,
         .gender-odds,
         .gender-odds * { box-sizing: border-box; }
@@ -26,9 +34,8 @@
           --charcoal:#2C2C2C;
           --border:#E3E0D6;
 
-          max-width:900px;
-          margin:0 auto;
-          padding:1.4rem 1.6rem 1.5rem;
+          margin:0;
+          padding:1.15rem 1.25rem 1.25rem;
           border-radius:16px;
           border:1px solid rgba(0,0,0,0.05);
           background:linear-gradient(135deg,#FFFFFF,var(--beige));
@@ -49,7 +56,7 @@
         }
 
         .gender-odds__eyebrow{
-          margin-top:0.35rem;
+          margin-top:0.3rem;
           text-transform:uppercase;
           letter-spacing:0.08em;
           font-size:0.78rem;
@@ -58,7 +65,7 @@
         }
 
         .gender-odds__title{
-          margin:0.1rem 0 0.5rem;
+          margin:0.1rem 0 0.45rem;
           font-size:1.45rem;
           font-weight:800;
         }
@@ -73,13 +80,13 @@
         .gender-odds__grid{
           display:grid;
           grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-          gap:1.3rem;
-          margin-top:1.1rem;
+          gap:1rem;
+          margin-top:1rem;
         }
 
         .gender-card{
           border-radius:14px;
-          padding:0.9rem 1rem 1rem;
+          padding:0.85rem 0.95rem 0.95rem;
           border:1px solid rgba(0,0,0,0.05);
           background:#ffffff;
           position:relative;
@@ -103,7 +110,7 @@
           font-weight:700;
           text-transform:uppercase;
           letter-spacing:0.08em;
-          margin-bottom:0.35rem;
+          margin-bottom:0.3rem;
         }
 
         .gender-card__chip{
@@ -119,7 +126,7 @@
           display:flex;
           align-items:baseline;
           gap:0.35rem;
-          margin-bottom:0.15rem;
+          margin-bottom:0.1rem;
         }
 
         .gender-card__percent{
@@ -139,7 +146,7 @@
         }
 
         .gender-card__bar{
-          margin:0.65rem 0 0.55rem;
+          margin:0.6rem 0 0.5rem;
           height:8px;
           border-radius:999px;
           background:#F1EBDF;
@@ -162,7 +169,7 @@
         }
 
         .gender-card__subcopy{
-          margin:0 0 0.5rem;
+          margin:0 0 0.45rem;
           font-size:0.86rem;
           color:#5f625e;
         }
@@ -178,7 +185,7 @@
         .gender-card__list li{
           display:flex;
           gap:0.4rem;
-          margin-bottom:0.25rem;
+          margin-bottom:0.22rem;
         }
 
         .gender-card__bullet{
@@ -189,7 +196,7 @@
         }
 
         .gender-odds__footer{
-          margin:0.9rem 0 0;
+          margin:0.85rem 0 0;
           font-size:0.82rem;
           color:#777;
         }
@@ -204,8 +211,8 @@
         }
 
         .gender-odds__share{
-          margin-top:0.9rem;
-          padding-top:0.75rem;
+          margin-top:0.85rem;
+          padding-top:0.7rem;
           border-top:1px solid rgba(0,0,0,0.08);
           font-size:0.8rem;
           color:#777;
@@ -240,8 +247,8 @@
           height:190px;
           border-radius:10px;
           border:1px solid var(--border);
-          padding:0.6rem 0.7rem;
-          margin-top:0.5rem;
+          padding:0.55rem 0.7rem;
+          margin-top:0.45rem;
           font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
           resize:none;
           background:#fff;
@@ -250,19 +257,20 @@
 
         @media (max-width:720px){
           .gender-odds{
-            padding:1.1rem 1rem 1.2rem;
+            padding:1rem 1rem 1.15rem;
           }
           .gender-odds__grid{
             grid-template-columns:minmax(0,1fr);
+            gap:0.85rem;
           }
           .gender-card{
-            padding:0.85rem 0.9rem 0.9rem;
+            padding:0.8rem 0.9rem 0.9rem;
           }
         }
       </style>
 
       <div class="gender-odds__eyebrow">Thanksgiving Survival Odds · By Gender</div>
-      <h2 id="gender-odds-title-${uid}" class="gender-odds__title">Are Men or Women More Likely to Survive Thanksgiving?</h2>
+      <h2 id="gender-odds-title-\${uid}" class="gender-odds__title">Are Men or Women More Likely to Survive Thanksgiving?</h2>
       <p class="gender-odds__subtitle">
         Our model suggests men have slightly higher odds of a drama-free dinner — but women carry most of the stress, sleep loss, and holiday labor that keeps the day afloat.
       </p>
@@ -327,10 +335,10 @@
 
       <div class="gender-odds__share" aria-live="polite">
         <p class="gender-odds__share-title">Share this gender breakdown</p>
-        <button type="button" class="embed-toggle" aria-controls="embed-${uid}" aria-expanded="false">
+        <button type="button" class="embed-toggle" aria-controls="embed-\${uid}" aria-expanded="false">
           Get Embed Code
         </button>
-        <div id="embed-${uid}" class="embed-wrap" hidden>
+        <div id="embed-\${uid}" class="embed-wrap" hidden>
           <textarea class="embed-box" readonly></textarea>
         </div>
       </div>
@@ -359,7 +367,7 @@
       background:linear-gradient(135deg,#FFFFFF,var(--beige));
       border-radius:16px;
       border:1px solid rgba(0,0,0,0.05);
-      padding:16px 16px 18px;
+      padding:14px 14px 16px;
       font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
       box-shadow:0 10px 24px rgba(0,0,0,0.06);
       position:relative;
@@ -424,8 +432,11 @@
       margin:8px 0 0;font-size:.8rem;color:#777;
     }
     .an-thanksgiving-gender-embed .foot strong{font-weight:700;}
+    .an-thanksgiving-gender-embed .foot a{
+      color:#E87524;text-decoration:none;border-bottom:1px dotted currentColor;
+    }
     @media (max-width:640px){
-      .an-thanksgiving-gender-embed{padding:14px 12px 16px;}
+      .an-thanksgiving-gender-embed{padding:12px 12px 14px;}
     }
   </style>
 
@@ -474,5 +485,3 @@
   }
 })();
 </script>
-
-
