@@ -1,4 +1,4 @@
-<!-- Action Network – Thanksgiving Survival Odds by Gender (Drop-in, fully isolated) -->
+<!-- Action Network – Thanksgiving Survival Odds by Gender (Drop-in, fully isolated, compact for iframe) -->
 <div class="an-gender-widget"></div>
 <script>
 (function(){
@@ -16,7 +16,7 @@
           display:block;
           max-width:900px;
           margin:0 auto;
-          padding:clamp(8px,1.8vw,14px);
+          padding:0; /* no outer padding, so iframe feels tight */
           box-sizing:border-box;
         }
 
@@ -35,7 +35,7 @@
           --border:#E3E0D6;
 
           margin:0;
-          padding:1.15rem 1.25rem 1.25rem;
+          padding:1.05rem 1.15rem 1.15rem; /* slightly tighter */
           border-radius:16px;
           border:1px solid rgba(0,0,0,0.05);
           background:linear-gradient(135deg,#FFFFFF,var(--beige));
@@ -257,7 +257,7 @@
 
         @media (max-width:720px){
           .gender-odds{
-            padding:1rem 1rem 1.15rem;
+            padding:0.95rem 0.95rem 1.05rem;
           }
           .gender-odds__grid{
             grid-template-columns:minmax(0,1fr);
