@@ -1,4 +1,4 @@
-<!-- Thanksgiving Survival Tips Widget (dark-mode aware, compact padding) -->
+<!-- Thanksgiving Survival Tips Widget (dark-mode aware, compact padding, iframe-friendly) -->
 <div class="tnx-tips-widget"></div>
 <script>
 (function () {
@@ -9,13 +9,13 @@
   const uid = 'tnx' + Math.random().toString(36).slice(2, 8);
 
   shadow.innerHTML = `
-    <section class="tnx" aria-labelledby="tnx-title-\${uid}" role="region">
+    <section class="tnx" aria-labelledby="tnx-title-${uid}" role="region">
       <style>
         :host {
           display: block;
           max-width: 1100px;
           margin: 0 auto;
-          padding: clamp(8px, 2.4vw, 18px);
+          padding: 0; /* no extra outer padding – good for iframes */
           box-sizing: border-box;
         }
 
@@ -307,7 +307,7 @@
 
       <div class="tnx-inner">
         <div class="tnx-eyebrow">Thanksgiving Survival Tips</div>
-        <h2 id="tnx-title-\${uid}" class="tnx-title">Five Ways to Improve Your Thanksgiving Odds</h2>
+        <h2 id="tnx-title-${uid}" class="tnx-title">Five Ways to Improve Your Thanksgiving Odds</h2>
         <p class="tnx-sub">
           The odds of a peaceful Thanksgiving aren’t fixed. These small moves make it a little more likely everyone leaves speaking.
         </p>
@@ -386,11 +386,11 @@
         <div class="tnx-footer">
           <strong>Bottom line:</strong> Thanksgiving is a long game. Protect the relationships — the rest is leftovers.
           <div class="tnx-share">
-            <button type="button" class="tnx-embed-toggle" aria-controls="tnx-embed-\${uid}" aria-expanded="false">
+            <button type="button" class="tnx-embed-toggle" aria-controls="tnx-embed-${uid}" aria-expanded="false">
               Get Embed Code
             </button>
           </div>
-          <div id="tnx-embed-\${uid}" class="tnx-embed-wrap" hidden>
+          <div id="tnx-embed-${uid}" class="tnx-embed-wrap" hidden>
             <textarea class="tnx-embed" readonly></textarea>
           </div>
         </div>
