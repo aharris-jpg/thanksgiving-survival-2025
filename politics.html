@@ -1,4 +1,4 @@
-<!-- AN “Politics at the Table” (Drop-in, fully isolated) -->
+<!-- AN “Politics at the Table” (Drop-in, fully isolated, compact for iframe) -->
 <div class="an-politics-widget"></div>
 <script>
 (function(){
@@ -16,7 +16,7 @@
           display: block;
           max-width: 900px;
           margin: 0 auto;
-          padding: clamp(8px, 1.8vw, 14px);
+          padding: 0; /* no extra outer padding so iframe feels tight */
           box-sizing: border-box;
         }
 
@@ -31,7 +31,7 @@
           --border:#E3E0D6;
 
           margin: 0;
-          padding: 1rem 1.1rem 1.1rem;
+          padding: 0.85rem 0.95rem 0.95rem; /* slightly tighter */
           border-radius: 14px;
           border: 1px solid rgba(0,0,0,0.05);
           background: linear-gradient(135deg,#FFFFFF,var(--beige));
@@ -67,14 +67,14 @@
           display: grid;
           grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
           gap: 0.8rem;
-          margin-top: 0.9rem;
+          margin-top: 0.85rem;
         }
 
         .tgk-politics-mini__card {
           background:#FFFFFF;
           border-radius: 12px;
           border:1px solid rgba(0,0,0,0.04);
-          padding:0.75rem 0.85rem 0.85rem;
+          padding:0.7rem 0.8rem 0.85rem;
           font-size:0.8rem;
           transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
         }
@@ -169,7 +169,7 @@
         }
 
         .tgk-politics-mini__footnote {
-          margin-top:0.7rem;
+          margin-top:0.65rem;
           font-size:0.74rem;
           color:#777;
         }
@@ -179,8 +179,8 @@
         }
 
         .tgk-politics-mini__share {
-          margin-top:0.7rem;
-          padding-top:0.55rem;
+          margin-top:0.65rem;
+          padding-top:0.5rem;
           border-top:1px solid rgba(0,0,0,0.06);
           font-size:0.74rem;
           color:#777;
@@ -225,7 +225,7 @@
 
         @media (max-width:640px){
           .tgk-politics-mini{
-            padding:0.85rem 0.8rem 0.95rem;
+            padding:0.75rem 0.75rem 0.85rem;
           }
         }
       </style>
