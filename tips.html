@@ -1,4 +1,4 @@
-<!-- Thanksgiving Survival Tips Widget (trimmed copy) -->
+<!-- Thanksgiving Survival Tips Widget (dark-mode aware) -->
 <div class="tnx-tips-widget"></div>
 <script>
 (function () {
@@ -18,7 +18,9 @@
           padding: clamp(16px, 3vw, 28px);
           box-sizing: border-box;
         }
+
         .tnx {
+          /* Brand palette */
           --cranberry: #B22B3B;
           --pumpkin:   #E87524;
           --mustard:   #F1C232;
@@ -26,14 +28,16 @@
           --sage-soft: #E4EAD5;
           --beige:     #F9F6F1;
           --charcoal:  #2C2C2C;
-          --border:    #E3E0D6;
 
-          --bg: #FFFFFF;
-          --ink: var(--charcoal);
-          --muted: #5F625E;
-          --card: #FFFCF6;
-          --radius: 14px;
-          --shadow: 0 10px 25px rgba(0,0,0,0.06);
+          /* Theme tokens (light defaults) */
+          --bg:       #FFFFFF;   /* base background of section */
+          --surface:  #FFFFFF;   /* cards / controls */
+          --ink:      var(--charcoal);
+          --muted:    #5F625E;
+          --card:     #FFFCF6;
+          --border:   #E3E0D6;
+          --radius:   14px;
+          --shadow:   0 10px 25px rgba(0,0,0,0.06);
 
           color: var(--ink);
           background: linear-gradient(180deg, var(--beige), #FFFFFF);
@@ -44,17 +48,39 @@
           position: relative;
           overflow: hidden;
         }
+
+        /* System dark mode */
         @media (prefers-color-scheme: dark) {
           .tnx {
-            --bg: #121317;
-            --ink: #ECEFF3;
-            --muted: #B5BCC4;
-            --card: #181A1F;
+            --bg:      #121317;
+            --surface: #181A1F;
+            --ink:     #ECEFF3;
+            --muted:   #B5BCC4;
+            --card:    #181A1F;
+            --border:  #2C303A;
+            --shadow:  none;
+
             background: radial-gradient(circle at top, #1E2128, #0F1115);
             border-color: #262933;
-            --shadow: none;
           }
         }
+
+        /* Page-level dark theme support (.dark / [data-theme="dark"]) */
+        :host-context(.dark) .tnx,
+        :host-context(.theme-dark) .tnx,
+        :host-context([data-theme="dark"]) .tnx {
+          --bg:      #121317;
+          --surface: #181A1F;
+          --ink:     #ECEFF3;
+          --muted:   #B5BCC4;
+          --card:    #181A1F;
+          --border:  #2C303A;
+          --shadow:  none;
+
+          background: radial-gradient(circle at top, #1E2128, #0F1115);
+          border-color: #262933;
+        }
+
         .tnx::before {
           content: "";
           position: absolute;
@@ -62,9 +88,11 @@
           height: 4px;
           background: linear-gradient(90deg, var(--sage-soft), var(--mustard), var(--pumpkin), var(--cranberry));
         }
+
         .tnx-inner {
           padding: 1.6rem 1.6rem 1.3rem;
         }
+
         .tnx-eyebrow {
           text-transform: uppercase;
           letter-spacing: 0.08em;
@@ -72,12 +100,14 @@
           color: var(--muted);
           font-weight: 700;
         }
+
         .tnx-title {
           margin: 0.25rem 0 0.3rem;
           font-size: clamp(1.5rem, 2.6vw, 2rem);
           font-weight: 800;
           line-height: 1.15;
         }
+
         .tnx-sub {
           margin: 0 0 1.1rem;
           color: var(--muted);
@@ -94,18 +124,23 @@
 
         .tnx-card {
           position: relative;
-          background: var(--bg);
+          background: var(--card);
           border-radius: var(--radius);
-          border: 1px solid rgba(0,0,0,0.05);
+          border: 1px solid var(--border);
           padding: 0.9rem 0.9rem 2.1rem;
           min-height: 135px;
           box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-          transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+          transition:
+            transform 0.16s ease,
+            box-shadow 0.16s ease,
+            border-color 0.16s ease,
+            background-color 0.16s ease;
         }
+
         .tnx-card:hover {
           transform: translateY(-2px);
           box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-          border-color: rgba(178,43,59,0.25);
+          border-color: rgba(178,43,59,0.35);
         }
 
         .tnx-badge {
@@ -119,11 +154,19 @@
           background: linear-gradient(135deg, #FFE7D5, #F9D0C9);
           border: 1px solid rgba(178,43,59,0.35);
         }
+
         @media (prefers-color-scheme: dark) {
           .tnx-badge {
             color: #160809;
-            background: radial-gradient(circle at top, rgba(248,202,185,0.25), rgba(178,43,59,0.3));
+            background: radial-gradient(circle at top, rgba(248,202,185,0.35), rgba(178,43,59,0.45));
           }
+        }
+
+        :host-context(.dark) .tnx-badge,
+        :host-context(.theme-dark) .tnx-badge,
+        :host-context([data-theme="dark"]) .tnx-badge {
+          color: #160809;
+          background: radial-gradient(circle at top, rgba(248,202,185,0.35), rgba(178,43,59,0.45));
         }
 
         .tnx-rule-title {
@@ -135,12 +178,14 @@
           font-size: 1rem;
           line-height: 1.3;
         }
+
         .tnx-icon {
           width: 24px;
           height: 24px;
           flex: 0 0 24px;
           color: var(--cranberry);
         }
+
         .tnx-text {
           margin: 0;
           font-size: 0.94rem;
@@ -154,10 +199,17 @@
           font-size: 0.85rem;
           color: var(--muted);
         }
+
         @media (prefers-color-scheme: dark) {
           .tnx-footer {
             border-top-color: rgba(255,255,255,0.08);
           }
+        }
+
+        :host-context(.dark) .tnx-footer,
+        :host-context(.theme-dark) .tnx-footer,
+        :host-context([data-theme="dark"]) .tnx-footer {
+          border-top-color: rgba(255,255,255,0.08);
         }
 
         .tnx-footer strong {
@@ -169,54 +221,79 @@
           text-align: right;
           font-size: 0.8rem;
         }
+
         .tnx-share button {
           appearance: none;
           border-radius: 999px;
           border: 1px solid var(--border);
           padding: 5px 10px;
-          background: #fffdf8;
+          background: var(--surface);
           color: var(--ink);
           font-size: 0.78rem;
           font-weight: 600;
           cursor: pointer;
         }
+
         .tnx-share button:hover {
           background: #FFF9EE;
         }
+
         @media (prefers-color-scheme: dark) {
           .tnx-share button {
             background: #191b21;
-            border-color: #2C303A;
+            border-color: var(--border);
           }
           .tnx-share button:hover {
             background: #22252E;
           }
         }
 
+        :host-context(.dark) .tnx-share button,
+        :host-context(.theme-dark) .tnx-share button,
+        :host-context([data-theme="dark"]) .tnx-share button {
+          background: #191b21;
+          border-color: var(--border);
+        }
+
+        :host-context(.dark) .tnx-share button:hover,
+        :host-context(.theme-dark) .tnx-share button:hover,
+        :host-context([data-theme="dark"]) .tnx-share button:hover {
+          background: #22252E;
+        }
+
         .tnx-embed-wrap[hidden] { display: none; }
+
         .tnx-embed {
           width: 100%;
           margin-top: 0.6rem;
           font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
           border-radius: 8px;
-          border: 1px solid rgba(0,0,0,0.12);
+          border: 1px solid var(--border);
           padding: 8px;
           resize: none;
           min-height: 180px;
-          background: #fff;
-          color: inherit;
+          background: var(--surface);
+          color: var(--ink);
         }
+
         @media (prefers-color-scheme: dark) {
           .tnx-embed {
             background: #101117;
-            border-color: #2A2D37;
           }
         }
 
-        a:focus-visible, button:focus-visible {
+        :host-context(.dark) .tnx-embed,
+        :host-context(.theme-dark) .tnx-embed,
+        :host-context([data-theme="dark"]) .tnx-embed {
+          background: #101117;
+        }
+
+        a:focus-visible,
+        button:focus-visible {
           outline: 3px solid var(--cranberry);
           outline-offset: 3px;
         }
+
         @media (prefers-reduced-motion: reduce) {
           .tnx-card { transition: none; }
         }
@@ -351,6 +428,64 @@
     .tnx-survival-tips-embed .icon{width:22px;height:22px;flex:0 0 22px;color:#B22B3B}
     .tnx-survival-tips-embed .text{margin:0;font-size:.94rem;color:#5F625E}
     .tnx-survival-tips-embed .footer{margin-top:1rem;padding-top:.6rem;border-top:1px dashed rgba(0,0,0,0.1);font-size:.85rem;color:#5F625E}
+
+    /* System dark-mode support */
+    @media (prefers-color-scheme: dark){
+      .tnx-survival-tips-embed{
+        background:radial-gradient(circle at top,#1E2128,#0F1115);
+        color:#ECEFF3;
+        border-color:#262933;
+      }
+      .tnx-survival-tips-embed .sub,
+      .tnx-survival-tips-embed .text,
+      .tnx-survival-tips-embed .eyebrow,
+      .tnx-survival-tips-embed .footer{
+        color:#B5BCC4;
+      }
+      .tnx-survival-tips-embed .card{
+        background:#181A1F;
+        border-color:#2C303A;
+        box-shadow:none;
+      }
+      .tnx-survival-tips-embed .footer{
+        border-top-color:rgba(255,255,255,0.08);
+      }
+    }
+
+    /* Page-level dark theme support */
+    .dark .tnx-survival-tips-embed,
+    .theme-dark .tnx-survival-tips-embed,
+    [data-theme="dark"] .tnx-survival-tips-embed{
+      background:radial-gradient(circle at top,#1E2128,#0F1115);
+      color:#ECEFF3;
+      border-color:#262933;
+    }
+    .dark .tnx-survival-tips-embed .sub,
+    .dark .tnx-survival-tips-embed .text,
+    .dark .tnx-survival-tips-embed .eyebrow,
+    .dark .tnx-survival-tips-embed .footer,
+    .theme-dark .tnx-survival-tips-embed .sub,
+    .theme-dark .tnx-survival-tips-embed .text,
+    .theme-dark .tnx-survival-tips-embed .eyebrow,
+    .theme-dark .tnx-survival-tips-embed .footer,
+    [data-theme="dark"] .tnx-survival-tips-embed .sub,
+    [data-theme="dark"] .tnx-survival-tips-embed .text,
+    [data-theme="dark"] .tnx-survival-tips-embed .eyebrow,
+    [data-theme="dark"] .tnx-survival-tips-embed .footer{
+      color:#B5BCC4;
+    }
+    .dark .tnx-survival-tips-embed .card,
+    .theme-dark .tnx-survival-tips-embed .card,
+    [data-theme="dark"] .tnx-survival-tips-embed .card{
+      background:#181A1F;
+      border-color:#2C303A;
+      box-shadow:none;
+    }
+    .dark .tnx-survival-tips-embed .footer,
+    .theme-dark .tnx-survival-tips-embed .footer,
+    [data-theme="dark"] .tnx-survival-tips-embed .footer{
+      border-top-color:rgba(255,255,255,0.08);
+    }
   </style>
 
   <div class="eyebrow">Thanksgiving Survival Tips</div>
@@ -410,5 +545,3 @@
   }
 })();
 </script>
-
-
